@@ -12,14 +12,25 @@ import OrderHistory from "./components/screens/OrderHistory";
 import Profile from "./components/screens/Profile";
 import Home from "./components/screens/Home";
 import { Ionicons } from '@expo/vector-icons';
+import FoodDetailScreen from './components/screens/FoodDetailScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
+function HomeStack(){
+  return(
+    <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="FoodDetailScreen" component={FoodDetailScreen} />
+
+    </Stack.Navigator>
+  );
+
+}
 function MapTabs() {
   return (
     <Tab.Navigator screenOptions={{ headerShown: false, tabBarShowLabel: false }}>
-        <Tab.Screen name="Home" component={Home} 
+        <Tab.Screen name="Home" component={HomeStack} 
             options={{ 
                 tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} />
         }}

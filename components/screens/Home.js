@@ -23,7 +23,7 @@ const Home = ( {navigation} ) => {
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.foodItem} onPress={() => console.log(`Clicked on ${item.name}`)}>
+          <TouchableOpacity style={styles.foodItem} onPress={() => navigation.navigate("FoodDetailScreen", { food: item })}>
             <Image source={item.image} style={styles.foodImage} />
             <Text style={styles.foodName}>{item.name}</Text>
           </TouchableOpacity>

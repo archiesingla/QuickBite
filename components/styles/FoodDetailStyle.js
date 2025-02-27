@@ -1,0 +1,94 @@
+import { StyleSheet } from "react-native";
+
+export default StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingVertical: 15, // Moved content downward
+    paddingHorizontal: 20,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "space-between", // Better balance
+  },
+  header: {
+    width: "100%",
+    alignItems: "center",
+    marginBottom: -5,
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    resizeMode: "contain",
+  },
+  foodImage: {
+    width: 250,
+    height: 250,
+    borderRadius: 15,
+    marginBottom: 20,
+    alignSelf: "center",
+  },
+  foodName: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  foodDescription: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 20,
+    paddingHorizontal: 20,
+  },
+  quantityContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    justifyContent: "space-between",
+    backgroundColor: "#f2f2f2", // Full-width background
+    borderRadius: 10,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    marginBottom: 30, // Extra space to balance the screen
+  },
+  quantityButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    backgroundColor: "#FF6347",
+  },
+  quantityText: {
+    fontSize: 18,
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  quantityNumber: {
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "center",
+    minWidth: 50,
+    color: "#333",
+  },
+  noteInput: {
+    width: "100%",
+    height: 60,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
+    textAlignVertical: "top",
+    marginBottom: 20,
+  },
+  addToCartButton: {
+    backgroundColor: "#FF6347",
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+    width: "100%",
+    alignItems: "center",
+  },
+  addToCartText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+});
