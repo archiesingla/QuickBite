@@ -1,13 +1,18 @@
 import React from "react";
 import StackNavigator from "./Navigation";
 import { NavigationContainer } from "@react-navigation/native";
+import { CartProvider } from "./components/screens/CartContext";
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <StackNavigator/>
+    <CartProvider>
+      <NavigationContainer>
+        <StackNavigator/>
 
-    </NavigationContainer>
+      </NavigationContainer>
+
+    </CartProvider>
+    
     
   );
 };

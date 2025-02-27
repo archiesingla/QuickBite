@@ -27,7 +27,7 @@ export const foodData = {
     { id: "17", name: "Fattoush Salad", image: require("../images/futtous.jpeg"), description:"Comes with vineger, pickles, pepper, tomato, lettuce, and onion" },
   ],
   Desserts: [
-    { id: "18", name: "Cinnamon", image: require("../images/cinnamon.jpeg"), description:"Cinnamon, Cinnamon incream sandwich, cinnamon with cream" },
+    { id: "18", name: "Cinnamon Roll", image: require("../images/cinnamon.jpeg"), description:"Cinnamon, Cinnamon incream sandwich, cinnamon with cream" },
     { id: "19", name: "Muffin", image: require("../images/muffin.jpeg"), description:"chocolate muffin, cranberry muffin, blueberry muffin, passion fruit" },
     { id: "20", name: "Pancake", image: require("../images/pancake.jpeg"), description:"Comes with maple syrup" },
     { id: "21", name: "Waffle", image: require("../images/waffle.jpeg"), description:"Comes with maple syrup" },

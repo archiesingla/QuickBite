@@ -8,11 +8,12 @@ import ForgotPassword from "./components/screens/ForgotPassword";
 import SigninEmployees from "./components/screens/SigninEmployees";
 import SignUp from "./components/screens/SignUp";
 import EmployeeClockIn from "./components/screens/EmployeeClockIn";
-import OrderHistory from "./components/screens/OrderHistory";
+import Cart from "./components/screens/Cart";
 import Profile from "./components/screens/Profile";
 import Home from "./components/screens/Home";
 import { Ionicons } from '@expo/vector-icons';
 import FoodDetailScreen from './components/screens/FoodDetailScreen';
+import CartIcon from './components/screens/CartIcon';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -35,9 +36,9 @@ function MapTabs() {
                 tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} />
         }}
         />
-        <Tab.Screen name="OrderHistory" component={OrderHistory} 
+        <Tab.Screen name="Cart" component={Cart} 
             options={{ 
-                tabBarIcon: ({ color, size }) => <Ionicons name="cart" size={size} color={color} />
+                tabBarIcon: ({ color, size }) => <CartIcon />
         }}
         />
         <Tab.Screen 
