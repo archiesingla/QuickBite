@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
 import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import Login from "./Login";
 
 const SignUp = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -34,10 +35,15 @@ const SignUp = ({ navigation }) => {
         if (error.code === "auth/email-already-in-use") {
             Alert.alert("Error", "Email already in use.");
           }
+        else if (error.code === "auth/invalid-email") {
+            Alert.alert("Error", "Invalid Email !! Please use valid email.");
+          }
         else{
             Alert.alert("Sign-Up Failed", error.message);
-
         }
+        setEmail('');
+        setPassword('');
+        setConfirmPassword('');
     }
   };
 
