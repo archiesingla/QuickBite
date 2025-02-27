@@ -1,16 +1,17 @@
-// components/screens/CartIcon.js
 import React from 'react';
 import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useCart } from './CartContext'; // Import useCart hook
+import { useCart } from './CartContext';
 
 const CartIcon = () => {
-  const { cartItems } = useCart(); // Get cart items count
+  const { cartItems } = useCart();
+
+  const totalItems = cartItems.length;
 
   return (
     <View style={{ position: 'relative' }}>
       <Ionicons name="cart" size={30} color="black" />
-      {cartItems > 0 && (
+      {totalItems > 0 && (
         <View
           style={{
             position: 'absolute',
@@ -24,7 +25,7 @@ const CartIcon = () => {
             alignItems: 'center',
           }}
         >
-          <Text style={{ color: 'white', fontSize: 12 }}>{cartItems}</Text>
+          <Text style={{ color: 'white', fontSize: 12 }}>{totalItems}</Text>
         </View>
       )}
     </View>

@@ -1,12 +1,9 @@
-// components/screens/CartScreen.js
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
-import { useCart } from './CartContext'; // Import the useCart hook
+import { useCart } from './CartContext';
 
-const Cart = () => {
-  const { cartItems, removeFromCart } = useCart(); // Get cart items and remove function
-
-  // Render individual cart item
+const Cart = ({navigation}) => {
+  const { cartItems, removeFromCart } = useCart();
   const renderCartItem = ({ item }) => (
     <View style={styles.cartItem}>
       <Image source={item.image} style={styles.foodImage} />
@@ -22,14 +19,18 @@ const Cart = () => {
 
   return (
     <View style={styles.container}>
-      {/* Logo at the top */}
+
       <View style={styles.logoContainer}>
         <Image source={require("../images/logo.jpeg")} style={styles.logo} />
       </View>
 
-      {/* Display message if cart is empty */}
       {cartItems.length === 0 ? (
-        <Text style={styles.emptyCart}>Your cart is empty</Text>
+        <View style={styles.emptyCartContainer}>
+          <Text style={styles.emptyCart}>Your cart is empty</Text>
+          <TouchableOpacity style={styles.proceedButton} onPress={() => navigation.navigate("Home")}>
+            <Text style={styles.proceedButtonText}>Want to eat something delicious?</Text>
+          </TouchableOpacity>
+        </View>
       ) : (
         <FlatList
           data={cartItems}
@@ -38,10 +39,11 @@ const Cart = () => {
         />
       )}
 
-      {/* Proceed to checkout button */}
-      <TouchableOpacity style={styles.proceedButton} onPress={() => console.log("Proceeding to checkout")}>
-        <Text style={styles.proceedButtonText}>Proceed to Checkout</Text>
-      </TouchableOpacity>
+      {cartItems.length > 0 && (
+        <TouchableOpacity style={styles.proceedButton} onPress={() => console.log("Proceeding to checkout")}>
+          <Text style={styles.proceedButtonText}>Proceed to Checkout</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -49,21 +51,25 @@ const Cart = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
+    padding: 20,
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: 20, // Add margin to space out logo from the items
+    marginBottom: 10,
   },
   logo: {
-    width: 120, // Adjust size as needed
-    height: 50, // Adjust size as needed
-    resizeMode: 'contain',
+    width: 100,
+    height: 100,
+    resizeMode: "contain",
+
   },
   cartItem: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 15,
+    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: 10,
   },
   foodImage: {
     width: 60,
@@ -91,13 +97,18 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 14,
   },
+  emptyCartContainer: {
+    alignItems: 'center',
+    marginTop: 50,
+  },
   emptyCart: {
     textAlign: 'center',
     fontSize: 18,
     marginTop: 20,
+    color: 'gray',
   },
   proceedButton: {
-    backgroundColor: '#4CAF50', // You can change this color
+    backgroundColor: '#4CAF50',
     padding: 15,
     borderRadius: 5,
     marginTop: 20,

@@ -34,7 +34,7 @@ const Home = ( {navigation} ) => {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Search Bar */}
+ 
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
@@ -48,7 +48,6 @@ const Home = ( {navigation} ) => {
         </TouchableOpacity>
       </View>
 
-      {/* Categories List */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesList}>
         {categories.map((category, index) => (
           <TouchableOpacity key={index} style={styles.categoryButton}>
@@ -57,7 +56,6 @@ const Home = ( {navigation} ) => {
         ))}
       </ScrollView>
 
-      {/* Food Sections */}
       {categories.map((category) => renderCategory(category))}
     </ScrollView>
   );

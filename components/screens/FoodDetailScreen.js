@@ -7,7 +7,7 @@ const FoodDetail = ({ route, navigation }) => {
   const { food } = route.params;
   const [quantity, setQuantity] = useState(1);
   const [note, setNote] = useState("");
-  const { addToCart } = useCart([]);
+  const { addToCart } = useCart();
 
   const handleIncrease = () => setQuantity(quantity + 1);
   const handleDecrease = () => setQuantity(quantity > 1 ? quantity - 1 : 1);
@@ -19,17 +19,14 @@ const FoodDetail = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       
-      {/* Logo in Header */}
       <View style={styles.header}>
         <Image source={require("../images/logo.jpeg")} style={styles.logo} />
       </View>
 
-      {/* Food Image */}
       <Image source={food.image} style={styles.foodImage} />
       <Text style={styles.foodName}>{food.name}</Text>
       <Text style={styles.foodDescription}>{food.description}</Text>
 
-      {/* Quantity Selector */}
       <View style={styles.quantityContainer}>
         <TouchableOpacity style={styles.quantityButton} onPress={handleDecrease}>
           <Text style={styles.quantityText}>-</Text>
@@ -42,7 +39,6 @@ const FoodDetail = ({ route, navigation }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Note Input */}
       <TextInput
         style={styles.noteInput}
         placeholder="Add a note (optional)"
@@ -51,7 +47,6 @@ const FoodDetail = ({ route, navigation }) => {
         multiline
       />
 
-      {/* Add to Cart Button */}
       <TouchableOpacity style={styles.addToCartButton} onPress={handleAddToCart}>
         <Text style={styles.addToCartText}>Add to Cart</Text>
       </TouchableOpacity>

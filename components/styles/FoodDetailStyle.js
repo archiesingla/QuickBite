@@ -3,11 +3,11 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: 15, // Moved content downward
+    paddingVertical: 15,
     paddingHorizontal: 20,
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "space-between", // Better balance
+    justifyContent: "space-between",
   },
   header: {
     width: "100%",
@@ -44,11 +44,11 @@ export default StyleSheet.create({
     alignItems: "center",
     width: "100%",
     justifyContent: "space-between",
-    backgroundColor: "#f2f2f2", // Full-width background
+    backgroundColor: "#f2f2f2", 
     borderRadius: 10,
     paddingVertical: 15,
     paddingHorizontal: 20,
-    marginBottom: 30, // Extra space to balance the screen
+    marginBottom: 30,
   },
   quantityButton: {
     paddingVertical: 10,
