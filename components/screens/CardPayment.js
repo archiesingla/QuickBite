@@ -49,8 +49,14 @@ const CardPayment = ({ route, navigation }) => {
 
   const handleProceed = () => {
     if (validateCardDetails()) {
-      Alert.alert("Payment Successful", `Your ${cardType} payment was processed.`);
-      navigation.navigate("OrderConfirmation");
+      Alert.alert("Payment Successful", `Your ${cardType} payment was processed.`,[
+        {
+          text: "OK",
+          onPress: () => {
+            navigation.navigate("OrderConfirmation");
+          },
+        },
+      ]);
     }
   };
 

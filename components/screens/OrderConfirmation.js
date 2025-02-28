@@ -90,8 +90,7 @@ const styles = StyleSheet.create({
   cancelText: { 
     color: "white", 
     fontSize: 16, 
-    fontWeight: "bold" 
-},
+    fontWeight: "bold" },
 });
 
 export default OrderConfirmation;
