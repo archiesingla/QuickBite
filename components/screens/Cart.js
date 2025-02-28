@@ -7,10 +7,7 @@ const Cart = ({ navigation }) => {
 
   const renderCartItem = ({ item }) => (
     <View style={styles.cartItem}>
-      {/* Item Image */}
       <Image source={item.image} style={styles.foodImage} />
-
-      {/* Item Details */}
       <View style={styles.itemDetails}>
         <Text style={styles.foodName}>{item.name}</Text>
         <Text style={styles.foodPrice}>Price: ${item.price ? item.price.toFixed(2) : "N/A"}</Text>
@@ -18,10 +15,9 @@ const Cart = ({ navigation }) => {
         {item.note && <Text style={styles.foodNote}>Note: {item.note}</Text>}
       </View>
 
-      {/* Quantity Controls + Remove Button */}
       <View style={styles.actionsContainer}>
         <View style={styles.quantityControls}>
-          <TouchableOpacity onPress={() => decreaseQuantity(item.id)} style={styles.quantityButton}>
+          <TouchableOpacity onPress={() => decreaseQuantity(item.id, item.note)} style={styles.quantityButton}>
             <Text style={styles.quantityText}>-</Text>
           </TouchableOpacity>
 
@@ -31,9 +27,7 @@ const Cart = ({ navigation }) => {
             <Text style={styles.quantityText}>+</Text>
           </TouchableOpacity>
         </View>
-
-        {/* Remove Button */}
-        <TouchableOpacity onPress={() => removeFromCart(item.id)} style={styles.removeButton}>
+        <TouchableOpacity onPress={() => removeFromCart(item.id, item.note)} style={styles.removeButton}>
           <Text style={styles.removeText}>Remove</Text>
         </TouchableOpacity>
       </View>
@@ -57,13 +51,13 @@ const Cart = ({ navigation }) => {
         <>
           <FlatList
             data={cartItems}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item) => `${item.id}-${item.note || 'no-note'}`}
             renderItem={renderCartItem}
           />
           <View style={styles.totalContainer}>
             <Text style={styles.totalText}>Total: ${getTotalPrice().toFixed(2)}</Text>
           </View>
-          <TouchableOpacity style={styles.proceedButton} onPress={() => console.log("Proceeding to checkout")}>
+          <TouchableOpacity style={styles.proceedButton} onPress={() => navigation.navigate("Home", { screen: "Payment" })}>
             <Text style={styles.proceedButtonText}>Proceed to Checkout</Text>
           </TouchableOpacity>
         </>

@@ -14,6 +14,9 @@ import Home from "./components/screens/Home";
 import { Ionicons } from '@expo/vector-icons';
 import FoodDetailScreen from './components/screens/FoodDetailScreen';
 import CartIcon from './components/screens/CartIcon';
+import Payment from './components/screens/Payment';
+import CardPayment from './components/screens/CardPayment';
+import OrderConfirmation from './components/screens/OrderConfirmation';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -23,6 +26,10 @@ function HomeStack(){
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="FoodDetailScreen" component={FoodDetailScreen} />
+      <Stack.Screen name="Payment" component={Payment} />
+      <Stack.Screen name="CardPayment" component={CardPayment} />
+      <Stack.Screen name="OrderConfirmation" component={OrderConfirmation} />
+
 
     </Stack.Navigator>
   );

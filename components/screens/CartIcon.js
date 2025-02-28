@@ -6,26 +6,24 @@ import { useCart } from './CartContext';
 const CartIcon = () => {
   const { cartItems } = useCart();
 
-  const totalItems = cartItems.length;
-
   return (
-    <View style={{ position: 'relative' }}>
-      <Ionicons name="cart" size={30} color="black" />
-      {totalItems > 0 && (
-        <View
-          style={{
-            position: 'absolute',
-            top: -5,
-            right: -5,
-            backgroundColor: 'red',
-            borderRadius: 50,
-            width: 20,
-            height: 20,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <Text style={{ color: 'white', fontSize: 12 }}>{totalItems}</Text>
+    <View>
+      <Ionicons name="cart" size={24} color="black" />
+      {cartItems.length > 0 && (
+        <View style={{
+          position: "absolute",
+          right: -6,
+          top: -3,
+          backgroundColor: "red",
+          borderRadius: 10,
+          width: 20,
+          height: 20,
+          justifyContent: "center",
+          alignItems: "center",
+        }}>
+          <Text style={{ color: "white", fontSize: 12, fontWeight: "bold" }}>
+            {cartItems.length}
+          </Text>
         </View>
       )}
     </View>
