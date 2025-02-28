@@ -1,4 +1,4 @@
-export const categories = ["Breakfast","Sandwiches", "Wraps", "Salads", "Desserts", "Drinks"];
+export const categories = ["Breakfast","Sandwiches", "Wraps", "Salads","Lunch","Bowl", "Desserts", "Drinks"];
 
 export const foodData = {
   Breakfast: [
@@ -25,7 +25,8 @@ export const foodData = {
   Salads: [
     { id: "16", name: "Caesar Salad", price: "4",image: require("../images/Caesar.jpeg"), description:"Comes with caesar dressing, bacon, parmeson cheese, tomato, lettuce" },
     { id: "17", name: "Fattoush Salad", price: "6",image: require("../images/futtous.jpeg"), description:"Comes with vineger, pickles, pepper, tomato, lettuce, and onion" },
-  ],
+    { id: "31", name: "Taco Salad", price: "8.69",image: require("../images/taco.jpeg"), description:"Beef and beans mix over a garden salad covered in cheese" },
+    ],
   Desserts: [
     { id: "18", name: "Cinnamon Roll", price: "2.98",image: require("../images/cinnamon.jpeg"), description:"Cinnamon, Cinnamon incream sandwich, cinnamon with cream" },
     { id: "19", name: "Muffin", price: "2.98",image: require("../images/muffin.jpeg"), description:"chocolate muffin, cranberry muffin, blueberry muffin, passion fruit" },
@@ -36,5 +37,17 @@ export const foodData = {
     { id: "22", name: "Iced Coffee", price: "3.65",image: require("../images/IceCoffee.jpeg"), description:"Comes with milk or cream, ice, and sugar or sweetner" },
     { id: "23", name: "Coffee", price: "3.65",image: require("../images/Coffee.jpeg"), description:"Comes with milk or cream, and sugar or sweetner" },
     { id: "24", name: "Shakes", price: "6.95",image: require("../images/shake.jpeg"), description:"Strawberry Shake, Chocolate Shake, and Vanilla Shake"},
+  ],
+  Lunch: [
+    { id: "25", name: "Salmon Dinner", price: "18",image: require("../images/salmon.jpeg"), description:"Tender salmon paired with rice and a fresh salad for a balanced meal." },
+    { id: "26", name: "Fried Chicken", price: "15",image: require("../images/friedchicken.jpeg"), description:"Rudy's Famous fried chicken served with hand cut fries" },
+    { id: "27", name: "Mac and Cheese", price: "14",image: require("../images/mac.jpeg"), description:"Creamy macaroni smothered in rich, melted cheese for a comforting classic."},
+    { id: "32", name: "Turkey Dinner", price: "9.85",image: require("../images/turkeydinner.jpeg"), description:"Home-cooked turkey with garlic mashed potatoes, homemade stuffing, vegetables , cranberries, and rich gravy." },
+    { id: "33", name: "Butter Chicken", price: "6.85",image: require("../images/butterchicken.jpeg"), description:"Ginger, curry, sour cream, and garlic-seasoned chicken served with rice and salad." },
+  ],
+  Bowl: [
+    { id: "28", name: "Beef Shawarma", price: "15",image: require("../images/beefs.jpeg"), description:"Beef and hummus, rice , fattoush, turnip and pita" },
+    { id: "29", name: "Chicken Shawarma", price: "15",image: require("../images/chickens.jpeg"), description:"chicken and garlic, rice, Fattoush, turnip and pita" },
+    { id: "30", name: "Shawarma Combo", price: "16",image: require("../images/shawrmacombo.jpeg"), description:"Shawarma chicken and beef, your choice of rice or fries and your choice of fattoush salad or tabbouleh, Comes with garlic and hummus, pita and turnip"},
   ],
 };
