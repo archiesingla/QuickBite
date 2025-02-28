@@ -10,6 +10,7 @@ const Cart = ({navigation}) => {
       <View style={styles.itemDetails}>
         <Text style={styles.foodName}>{item.name}</Text>
         <Text style={styles.foodQuantity}>Quantity: {item.quantity}</Text>
+        {item.note && <Text style={styles.foodNote}>Note: {item.note}</Text>}
       </View>
       <TouchableOpacity onPress={() => removeFromCart(item.id)} style={styles.removeButton}>
         <Text style={styles.removeText}>Remove</Text>

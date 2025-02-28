@@ -12,7 +12,7 @@ const FoodDetail = ({ route, navigation }) => {
   const handleIncrease = () => setQuantity(quantity + 1);
   const handleDecrease = () => setQuantity(quantity > 1 ? quantity - 1 : 1);
   const handleAddToCart = () => {
-    addToCart(food, quantity);
+    addToCart(food, quantity, note);
     navigation.navigate("Home");
   };
 
