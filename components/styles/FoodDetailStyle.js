@@ -29,7 +29,13 @@ export default StyleSheet.create({
   foodName: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 10,
+    marginBottom: 5,
+    textAlign: "center",
+  },
+  price: {
+    fontSize: 15,
+    fontWeight: "bold",
+    marginBottom: 5,
     textAlign: "center",
   },
   foodDescription: {

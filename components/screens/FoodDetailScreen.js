@@ -12,7 +12,7 @@ const FoodDetail = ({ route, navigation }) => {
   const handleIncrease = () => setQuantity(quantity + 1);
   const handleDecrease = () => setQuantity(quantity > 1 ? quantity - 1 : 1);
   const handleAddToCart = () => {
-    addToCart(food, quantity, note);
+    addToCart(food, quantity, note, Number(food.price));
     navigation.navigate("Home");
   };
 
@@ -25,7 +25,9 @@ const FoodDetail = ({ route, navigation }) => {
 
       <Image source={food.image} style={styles.foodImage} />
       <Text style={styles.foodName}>{food.name}</Text>
+      <Text style={styles.price}>Price: ${food.price}</Text>
       <Text style={styles.foodDescription}>{food.description}</Text>
+      
 
       <View style={styles.quantityContainer}>
         <TouchableOpacity style={styles.quantityButton} onPress={handleDecrease}>
