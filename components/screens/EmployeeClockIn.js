@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
-import styles from "../styles/styles";
+import styles from "../styles/EmployeeClockIn";
 
 const EmployeeClockIn = ({ navigation }) => {
   const [clockedIn, setClockedIn] = useState(false);
