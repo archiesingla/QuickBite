@@ -10,6 +10,7 @@ import {
 import styles from "../styles/styles";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -42,6 +43,10 @@ const Login = ({ navigation }) => {
       }
     }
   };
+  const handleMap = async () => {
+    Alert.alert("Maps", "Maps will be handled here");
+
+  }
 
   const handleGoogleSignIn = async () => {
     try {
@@ -94,22 +99,27 @@ const Login = ({ navigation }) => {
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.googleButton} onPress={handleGoogleSignIn}>
-        <Text style={styles.buttonText}>Sign in with Google</Text>
-      </TouchableOpacity>
 
       <TouchableOpacity style={styles.employeeButton} onPress={() => navigation.navigate("SigninEmployees")}>
         <Text style={styles.buttonText}>Sign in for Employees</Text>
       </TouchableOpacity>
 
       <View style={styles.optionsContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
-          <Text style={styles.optionText}>Forget Password</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-          <Text style={styles.optionText}>Sign Up</Text>
+        <View style={styles.optionRow}>
+          <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
+            <Text style={styles.optionText}>Forgot Password</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
+            <Text style={styles.optionText}>Sign Up</Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity style={styles.findRestaurantContainer} onPress={()=>navigation.navigate("MapScreen")}>
+          <Text style={styles.findRestaurant}>Locate Me !!</Text>
+          <Icon name="location-on" size={18} color="#007BFF" style={styles.locationIcon} />
         </TouchableOpacity>
       </View>
+
+
     </View>
   );
 };

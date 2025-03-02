@@ -17,6 +17,7 @@ import CartIcon from './components/screens/CartIcon';
 import Payment from './components/screens/Payment';
 import CardPayment from './components/screens/CardPayment';
 import OrderConfirmation from './components/screens/OrderConfirmation';
+import MapScreen from './components/screens/MapScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -66,6 +67,7 @@ export default function StackNavigator() {
             <Stack.Screen name="SigninEmployees" component={SigninEmployees} />
             <Stack.Screen name="SignUp" component={SignUp} />
             <Stack.Screen name="EmployeeClockIn" component={EmployeeClockIn} />
+            <Stack.Screen name="MapScreen" component={MapScreen} />
             <Stack.Screen name="Home" component={MapTabs}/>
       </Stack.Navigator>
     

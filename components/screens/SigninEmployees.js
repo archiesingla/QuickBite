@@ -7,7 +7,7 @@ const SigninEmployees = ({ navigation }) =>{
 
   const handleBackToSignIn = () => {
       if (navigation) {
-        navigation.goBack(); // Navigate back to Sign-In page
+        navigation.goBack();
       } else {
         Alert.alert("Sign-In", "Redirecting to Sign-In page...");
       }
@@ -19,7 +19,7 @@ const SigninEmployees = ({ navigation }) =>{
       <Image style={styles.logo} source={require("../images/logo.jpeg")}/>
       <Text style={styles.title}>Welcome Employees</Text>
       <Text style={styles.subtitle}>Enter the password for Signin</Text>
-      {/* Password Input */}
+
       <TextInput
         style={styles.input}
         placeholder="Password"
@@ -29,12 +29,10 @@ const SigninEmployees = ({ navigation }) =>{
         onChangeText={setPassword}
       />
 
-      {/* Reset Password Button */}
       <TouchableOpacity style={styles.employeeButton} onPress={() => navigation.navigate("EmployeeClockIn")}>
         <Text style={styles.buttonText}>Sign In</Text>
       </TouchableOpacity>
 
-      {/* Back to Sign-In Option */}
       <TouchableOpacity onPress={() => navigation.navigate("Login")}>
         <Text style={styles.optionText}>Back to Home Page</Text>
       </TouchableOpacity>

@@ -68,11 +68,37 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   optionsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
     width: "100%",
+    alignItems: "center", 
     marginTop: 10,
   },
+  optionRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%", 
+    paddingHorizontal: 10,
+  },
+  findRestaurantContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 10,
+    marginLeft: 50,
+  },
+  
+  findRestaurant: {
+    color: "#007BFF",
+    fontSize: 14,
+    textDecorationLine: "underline",
+    marginRight: 1, 
+  },
+  
+  locationIcon: {
+    marginLeft: 0, 
+  },
+  
+  
+  
   optionText: {
     color: "#007BFF",
     fontSize: 14,
