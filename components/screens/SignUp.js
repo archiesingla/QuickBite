@@ -93,10 +93,6 @@ const SignUp = ({ navigation }) => {
         <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.googleButton} onPress={handleGoogleSignUp}>
-        <Text style={styles.buttonText}>Sign up with Google</Text>
-      </TouchableOpacity>
-
       <View style={styles.optionsContainer}>
         <TouchableOpacity onPress={() => navigation.navigate("Login")}>
           <Text style={styles.optionText}>Already have an account? Log In</Text>
