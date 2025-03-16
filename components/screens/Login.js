@@ -8,9 +8,10 @@ import {
   Alert
 } from "react-native";
 import styles from "../styles/styles";
-import { FIREBASE_AUTH } from "../../firebaseConfig";
+import { FIREBASE_AUTH, FIRESTORE_DB } from "../../firebaseConfig";
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { doc, getDoc } from "firebase/firestore";
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -24,9 +25,17 @@ const Login = ({ navigation }) => {
     }
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      const adminDocRef = doc(FIRESTORE_DB, "admins", email);
+      const adminDoc = await getDoc(adminDocRef);
+
+      if (adminDoc.exists()) {
+        Alert.alert("Success", "Admin Logged in successfully");
+        navigation.navigate('AdminStack', { screen: 'AdminHome' });
+      } else {
       Alert.alert("Success", "Logged in successfully");
-      navigation.navigate("Home");
-    } catch (error) {
+      navigation.navigate('MainApp');
+    }
+   } catch (error) {
       if (error.code === "auth/invalid-email") {
         Alert.alert("Login Error", "Invalid Email !! Please use valid email.");
         setEmail('');

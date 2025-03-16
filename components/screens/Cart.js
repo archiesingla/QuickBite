@@ -57,7 +57,7 @@ const Cart = ({ navigation }) => {
           <View style={styles.totalContainer}>
             <Text style={styles.totalText}>Total: ${getTotalPrice().toFixed(2)}</Text>
           </View>
-          <TouchableOpacity style={styles.proceedButton} onPress={() => navigation.navigate("Home", { screen: "Payment" })}>
+          <TouchableOpacity style={styles.proceedButton} onPress={() => navigation.navigate("HomeStack", { screen: "Payment" })}>
             <Text style={styles.proceedButtonText}>Proceed to Checkout</Text>
           </TouchableOpacity>
         </>

@@ -1,0 +1,149 @@
+import React from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { useOrderHistory } from './OrderHistoryContext';
+
+const CheckOrders = () => {
+  const { orders, setOrders } = useOrderHistory(); // Ensure setOrders is available
+
+  // Function to update order status
+  const updateOrderStatus = (index, status) => {
+    const updatedOrders = [...orders];
+    updatedOrders[index].status = status === "Cancelled" ? "Cancelled by Rudy’s" : status;
+    setOrders(updatedOrders);
+  };
+
+  // Render individual order item
+  const renderOrderItem = ({ item, index }) => {
+    if (item.totalPrice === 0) return null; // Hide orders with total 0
+
+    return (
+      <View style={styles.orderItem}>
+        <Text style={styles.orderText}>Date: {item.date}</Text>
+        <Text style={styles.orderText}>Time: {item.time}</Text>
+        <Text style={styles.orderText}>Total: ${item.totalPrice.toFixed(2)}</Text>
+        <Text style={styles.orderText}>Items:</Text>
+
+        {item.items.map((foodItem, idx) => (
+          <View key={idx} style={styles.foodItemContainer}>
+            <Text style={styles.foodItemText}>{foodItem.name} x{foodItem.quantity}</Text>
+            {foodItem.note && <Text style={styles.foodNote}>Note: {foodItem.note}</Text>}
+          </View>
+        ))}
+
+        {/* Show buttons only if order is not yet accepted or cancelled */}
+        {item.status !== "Accepted" && item.status !== "Cancelled by Rudy’s" && (
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity 
+              style={[styles.button, styles.acceptButton]} 
+              onPress={() => updateOrderStatus(index, "Accepted")}
+            >
+              <Text style={styles.buttonText}>Accept</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={[styles.button, styles.cancelButton]} 
+              onPress={() => updateOrderStatus(index, "Cancelled")}
+            >
+              <Text style={styles.buttonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Show order status */}
+        {item.status && <Text style={styles.orderStatus}>Status: {item.status}</Text>}
+      </View>
+    );
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Orders</Text>
+      {orders.filter(order => order.totalPrice > 0).length === 0 ? (
+        <Text style={styles.noOrders}>No orders yet</Text>
+      ) : (
+        <FlatList
+          data={orders}
+          keyExtractor={(item, index) => `${item.date}-${index}`}
+          renderItem={renderOrderItem}
+        />
+      )}
+    </View>
+  );
+};
+
+// Styles
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 25,
+    backgroundColor: '#F8F8F8',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  noOrders: {
+    fontSize: 18,
+    color: '#555',
+    textAlign: 'center',
+  },
+  orderItem: {
+    backgroundColor: 'white',
+    padding: 15,
+    marginBottom: 15,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 3,
+  },
+  orderText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  foodItemContainer: {
+    marginTop: 5,
+  },
+  foodItemText: {
+    fontSize: 14,
+    color: '#555',
+  },
+  foodNote: {
+    fontSize: 12,
+    color: '#777',
+    fontStyle: 'italic',
+    marginLeft: 10,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+  button: {
+    padding: 10,
+    borderRadius: 5,
+    width: '48%',
+    alignItems: 'center',
+  },
+  acceptButton: {
+    backgroundColor: 'green',
+  },
+  cancelButton: {
+    backgroundColor: 'red',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  orderStatus: {
+    marginTop: 10,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'blue',
+  },
+});
+
+export default CheckOrders;

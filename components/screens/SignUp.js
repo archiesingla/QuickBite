@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
 import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import Login from "./Login";
 
 const SignUp = ({ navigation }) => {
   const [email, setEmail] = useState("");

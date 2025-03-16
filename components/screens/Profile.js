@@ -2,10 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 const Profile = ({ navigation }) => {
-  const handlefeedback = async () => {
-        Alert.alert("Native Features", "Camera will be added to allow user to click pictures and upload it");
-  
-      }
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Profile</Text>
@@ -13,10 +10,16 @@ const Profile = ({ navigation }) => {
             <Text style={styles.text}>Sign Out</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={handlefeedback} style={styles.button}>
+      <TouchableOpacity onPress={() => navigation.navigate("FeedbackScreen")} style={styles.button}>
             <Text style={styles.text}>User Feedback</Text>
       </TouchableOpacity>
-      
+
+      <TouchableOpacity onPress={() =>navigation.navigate("OrderHistory")} style={styles.button}>
+            <Text style={styles.text}>Order History</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() =>navigation.navigate("ContactUs")} style={styles.button}>
+            <Text style={styles.text}>Contact Us</Text>
+      </TouchableOpacity>
     </View>
   );
 };
