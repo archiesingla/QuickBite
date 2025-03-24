@@ -103,8 +103,18 @@ const OrderConfirmation = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#F8F8F8" },
-  logo: { width: 150, height: 80, marginBottom: 20, resizeMode: "contain" },
+  container: { 
+    flex: 1, 
+    justifyContent: "center", 
+    alignItems: "center", 
+    backgroundColor: "#F8F8F8" 
+  },
+  logo: { 
+    width: 150, 
+    height: 80, 
+    marginBottom: 20, 
+    resizeMode: "contain" 
+  },
   circle: { 
     width: 80, 
     height: 80, 
@@ -114,11 +124,30 @@ const styles = StyleSheet.create({
     alignItems: "center", 
     marginBottom: 20 
   },
-  cancelCircle: { backgroundColor: "red" },
-  message: { fontSize: 18, fontWeight: "bold", textAlign: "center", marginBottom: 20 },
-  timer: { fontSize: 16, color: "red", marginBottom: 10 },
-  cancelButton: { backgroundColor: "red", padding: 12, borderRadius: 8 },
-  cancelText: { color: "white", fontSize: 16, fontWeight: "bold" },
+  cancelCircle: { 
+    backgroundColor: "red" 
+  },
+  message: { 
+    fontSize: 18, 
+    fontWeight: "bold", 
+    textAlign: "center", 
+    marginBottom: 20 
+  },
+  timer: { 
+    fontSize: 16, 
+    color: "red", 
+    marginBottom: 10 
+  },
+  cancelButton: { 
+    backgroundColor: "red", 
+    padding: 12, 
+    borderRadius: 8 
+  },
+  cancelText: { 
+    color: "white", 
+    fontSize: 16, 
+    fontWeight: "bold" 
+  },
 });
 
 export default OrderConfirmation;

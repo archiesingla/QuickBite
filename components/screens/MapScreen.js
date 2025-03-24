@@ -9,9 +9,9 @@ const MapScreen = () => {
   const [errorMsg, setErrorMsg] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Cafe's location (Granville St, Halifax)
+  // Cafe's location
   const cafeLocation = {
-    latitude: 44.6371,  // Coordinates for 1681 Granville St, Halifax
+    latitude: 44.6371,
     longitude: -63.5727,
   };
 
@@ -44,7 +44,7 @@ const MapScreen = () => {
 
   // Function to open Google Maps with directions to the cafe
   const openDirections = (userLocation) => {
-    if (!userLocation) return; // Prevent navigation if user location is not available
+    if (!userLocation) return;
     const lat = cafeLocation.latitude;
     const lon = cafeLocation.longitude;
     const userLat = userLocation.latitude;
@@ -55,11 +55,11 @@ const MapScreen = () => {
   };
 
   if (loading) {
-    return <Text>Loading...</Text>; // Show loading text while waiting for location
+    return <Text>Loading...</Text>;
   }
 
   if (errorMsg) {
-    return <Text>{errorMsg}</Text>; // Show error message if permission is denied
+    return <Text>{errorMsg}</Text>;
   }
 
   return (
@@ -73,21 +73,8 @@ const MapScreen = () => {
           longitudeDelta: 0.0421,
         }}
         provider="google"
-        apiKey={Constants.manifest?.extra?.googleMapsApiKey} // Ensure this API key is correctly set up
-      >
-        {userLocation && (
-          <Marker
-            coordinate={userLocation}
-            title="Your Location"
-            pinColor="blue" // Different color for user location
-          />
-        )}
-        <Marker
-          coordinate={cafeLocation}
-          title="Cafe Location"
-          pinColor="red" // Different color for cafe location
-        />
-      </MapView>
+        apiKey={Constants.manifest?.extra?.googleMapsApiKey}
+      />
     </View>
   );
 };
