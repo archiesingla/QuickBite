@@ -4,27 +4,17 @@ import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { useOrderHistory } from "./OrderHistoryContext";
 
-const FeedbackScreen = () => {
+const FeedbackScreen = ({ route }) => {
+  const {order} = route.params;
+  const {orders, addFeedbackToOrder} = useOrderHistory();
   const [note, setNote] = useState("");
   const [imageUri, setImageUri] = useState(null);
   const [feedbackList, setFeedbackList] = useState([]);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    loadFeedbacks();
-  }, []);
-
-  const loadFeedbacks = async () => {
-    try {
-      const storedFeedbacks = await AsyncStorage.getItem("feedbacks");
-      if (storedFeedbacks) {
-        setFeedbackList(JSON.parse(storedFeedbacks));
-      }
-    } catch (error) {
-      console.error("Error loading feedbacks:", error);
-    }
-  };
+ 
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -58,29 +48,11 @@ const FeedbackScreen = () => {
     }
 
     const newFeedback = { note, imageUri, date: new Date().toLocaleString() };
-    const updatedFeedbackList = [newFeedback, ...feedbackList];
+    addFeedbackToOrder(order.date, newFeedback);
+    Alert.alert("Feedback Submitted!");
+    navigation.navigate("MainApp", { screen: "Order History" });
 
-    try {
-      await AsyncStorage.setItem("feedbacks", JSON.stringify(updatedFeedbackList));
-      setFeedbackList(updatedFeedbackList);
-      setNote("");
-      setImageUri(null);
-      Alert.alert("Feedback Submitted!");
-      setTimeout(() =>{
-        navigation.navigate("Profile");
-      }, 500)
-    } catch (error) {
-      console.error("Error saving feedback:", error);
-    }
   };
-
-  const renderFeedbackItem = ({ item }) => (
-    <View style={styles.feedbackCard}>
-      <Text style={styles.feedbackNote}>{item.note}</Text>
-      {item.imageUri && <Image source={{ uri: item.imageUri }} style={styles.imagePreview} />}
-      <Text style={styles.feedbackDate}>Submitted on: {item.date}</Text>
-    </View>
-  );
 
   return (
     <View style={styles.container}>
@@ -114,17 +86,6 @@ const FeedbackScreen = () => {
         <Text style={styles.submitText}>Submit Feedback</Text>
       </TouchableOpacity>
 
-      {/* Show All Submitted Feedback Below */}
-      {feedbackList.length > 0 && (
-        <View style={styles.previousFeedbackContainer}>
-          <Text style={styles.previousTitle}>Previous Feedbacks</Text>
-          <FlatList
-            data={feedbackList}
-            renderItem={renderFeedbackItem}
-            keyExtractor={(item, index) => index.toString()}
-          />
-        </View>
-      )}
     </View>
   );
 };
@@ -192,41 +153,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  previousFeedbackContainer: {
-    backgroundColor: "white",
-    padding: 15,
-    borderRadius: 10,
-    marginTop: 30,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
-    width: "100%",
-  },
-  previousTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 10,
-  },
-  feedbackCard: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
-    paddingBottom: 10,
-    marginBottom: 10,
-    padding: 10,
-  },
-  feedbackNote: {
-    fontSize: 16,
-    color: "#666",
-    marginBottom: 5,
-  },
-  feedbackDate: {
-    fontSize: 14,
-    color: "gray",
-    fontStyle: "italic",
-  },
+  
 });
 
 export default FeedbackScreen;

@@ -52,35 +52,7 @@ const Login = ({ navigation }) => {
       }
     }
   };
-  const handleMap = async () => {
-    Alert.alert("Maps", "Maps will be handled here");
-
-  }
-
-  const handleGoogleSignIn = async () => {
-    try {
-      console.log("Google Sign-In Button Clicked");
-      await GoogleSignin.hasPlayServices(); // Check if Google Play Services are available
-      const userInfo = await GoogleSignin.signIn();
-
-      // Create a Google credential with the obtained ID token
-      const googleCredential = GoogleAuthProvider.credential(userInfo.idToken);
-
-      // Sign-in with the credential
-      await signInWithCredential(auth, googleCredential);
-      Alert.alert("Success", "Signed in with Google");
-      navigation.navigate("Home");
-    } catch (error) {
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        Alert.alert("Sign-In Cancelled", "The Google Sign-In was cancelled.");
-      } else if (error.code === statusCodes.IN_PROGRESS) {
-        Alert.alert("Sign-In In Progress", "Google Sign-In is already in progress.");
-      } else {
-        Alert.alert("Google Sign-In Failed", error.message);
-      }
-    }
-  };
-
+  
   return (
     <View style={styles.container}>
       <Image source={require("../images/logo.jpeg")} style={styles.logo} />

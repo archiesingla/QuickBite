@@ -14,8 +14,16 @@ export const OrderHistoryProvider = ({ children }) => {
     setOrders(newOrders);
   };
 
+  const addFeedbackToOrder = (orderDate, feedback) => {
+    setOrders((prevOrders) =>
+      prevOrders.map((order) =>
+        order.date === orderDate ? { ...order, feedback } : order
+      )
+    );
+  };
+
   return (
-    <OrderHistoryContext.Provider value={{ orders, setOrders: updateOrders, addOrder }}>
+    <OrderHistoryContext.Provider value={{ orders, setOrders: updateOrders, addOrder, addFeedbackToOrder }}>
       {children}
     </OrderHistoryContext.Provider>
   );

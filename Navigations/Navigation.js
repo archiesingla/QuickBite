@@ -5,13 +5,13 @@ import ForgotPassword from "../components/screens/ForgotPassword";
 import SigninEmployees from "../components/screens/SigninEmployees";
 import SignUp from "../components/screens/SignUp";
 import EmployeeClockIn from "../components/screens/EmployeeClockIn";
-import Profile from "../components/screens/Profile";
 import MapScreen from '../components/screens/MapScreen';
 import OrderHistory from '../components/screens/OrderHistory';
 import ContactUs from '../components/screens/ContactUs';
 import MapTabs from './MapTabs';
 import AdminStack from './AdminStack';
 import ProfileNavigator from './ProfileNavigator';
+import FeedbackScreen from '../components/screens/FeedbackScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +26,7 @@ export default function StackNavigator() {
             <Stack.Screen name="MapScreen" component={MapScreen} />
             <Stack.Screen name="MapTabs" component={MapTabs}/>
             <Stack.Screen name="AdminStack" component={AdminStack}/>
+            <Stack.Screen name="Feedback" component={FeedbackScreen}/>
             <Stack.Screen name="MainApp" component={ProfileNavigator} />
       </Stack.Navigator>
     

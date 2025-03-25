@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
-import { View, Text, Button, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, Button, ActivityIndicator } from 'react-native';
 import { FIREBASE_AUTH, FIRESTORE_DB } from "../firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import ContactUs from '../components/screens/ContactUs';
@@ -9,13 +9,15 @@ import MapTabs from './MapTabs';
 import FeedbackScreen from '../components/screens/FeedbackScreen';
 import { useNavigation } from '@react-navigation/native';
 
+// Create Drawer Navigator
 const Drawer = createDrawerNavigator();
 
+// Custom Drawer Content to show user details
 const CustomDrawerContent = (props) => {
-  const [userName, setUserName] = useState("");
+  const [userName, setUserName] = useState('');
   const [loading, setLoading] = useState(true);
   const auth = FIREBASE_AUTH;
-  const userEmail = auth.currentUser?.email || "";
+  const userEmail = auth.currentUser?.email || '';
 
   useEffect(() => {
     const fetchUserName = async () => {
@@ -40,7 +42,7 @@ const CustomDrawerContent = (props) => {
   }, [userEmail]);
 
   const getInitials = (name) => {
-    return name ? name.charAt(0).toUpperCase() : "?";
+    return name ? name.charAt(0).toUpperCase() : '?';
   };
 
   return (
@@ -63,18 +65,23 @@ const CustomDrawerContent = (props) => {
           </>
         )}
       </View>
-      
 
       <DrawerItemList {...props} />
     </DrawerContentScrollView>
   );
 };
 
+// SignOutScreen Component
 const SignOutScreen = () => {
   const navigation = useNavigation();
 
-  const handleSignOut = () => {
-    auth.signOut().then(() => navigation.replace('Login'));
+  const handleSignOut = async () => {
+    try {
+      await FIREBASE_AUTH.signOut();
+      navigation.replace('Login'); // Redirect to login screen after signing out
+    } catch (error) {
+      console.error("Error during sign-out:", error);
+    }
   };
 
   return (
@@ -87,10 +94,12 @@ const SignOutScreen = () => {
 
 export default function ProfileNavigator() {
   return (
-    <Drawer.Navigator drawerContent={(props) => <CustomDrawerContent {...props} />} screenOptions={{ headerShown: true }}>
+    <Drawer.Navigator
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
+      screenOptions={{ headerShown: true }}
+    >
       <Drawer.Screen name="Home" component={MapTabs} options={{ headerShown: false }} />
       <Drawer.Screen name="Order History" component={OrderHistory} />
-      <Drawer.Screen name="Feedback" component={FeedbackScreen} />
       <Drawer.Screen name="Contact Us" component={ContactUs} />
       <Drawer.Screen name="Sign Out" component={SignOutScreen} />
     </Drawer.Navigator>

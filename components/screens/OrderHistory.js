@@ -1,9 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { useOrderHistory } from './OrderHistoryContext'; // Import OrderHistoryContext
 
-const OrderHistory = () => {
+const OrderHistory = ({navigation}) => {
   const { orders } = useOrderHistory(); // Access orders from OrderHistoryContext
+  const handleGiveFeedback = (order) => {
+    navigation.navigate('Feedback', { order });
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -21,7 +24,6 @@ const OrderHistory = () => {
 
           return (
             <View key={index} style={styles.orderContainer}>
-              {/* Make sure text is inside <Text> */}
               <Text style={styles.orderDate}>{order.date || 'No Date Available'}</Text>
               <Text style={styles.orderTime}>Ordered at: {order.time || 'No Time Available'}</Text>
               <Text style={styles.totalAmount}>Total: ${order.totalPrice.toFixed(2)}</Text>
@@ -38,8 +40,26 @@ const OrderHistory = () => {
                 <Text style={styles.foodNote}>No items</Text>
               )}
 
-              {/* Make sure status is also inside <Text> */}
               <Text style={styles.orderStatus}>Status: {order.status || 'No Status Available'}</Text>
+
+              {/* Display feedback if available */}
+              {order.feedback && (
+                <View style={styles.feedbackContainer}>
+                  <Text style={styles.feedbackText}>Feedback: {order.feedback.note}</Text>
+                  {order.feedback.imageUri && (
+                    <Image source={{ uri: order.feedback.imageUri }} style={styles.feedbackImage} />
+                  )}
+                </View>
+              )}
+
+              {/* Show "Give Feedback" button only if feedback is not given */}
+              {!order.feedback && (
+                <TouchableOpacity
+                  style={styles.feedbackButton}
+                  onPress={() => handleGiveFeedback(order)}>
+                  <Text style={styles.feedbackButtonText}>Give Feedback</Text>
+                </TouchableOpacity>
+              )}
             </View>
           );
         })
@@ -117,6 +137,34 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'red',
     marginTop: 10,
+  },
+  feedbackButton: {
+    marginTop: 15,
+    backgroundColor: '#4CAF50',
+    paddingVertical: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  feedbackButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  feedbackContainer: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: '#f1f1f1',
+    borderRadius: 5,
+  },
+  feedbackText: {
+    fontSize: 14,
+    color: '#333',
+    marginBottom: 5,
+  },
+  feedbackImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 10,
   },
 });
 

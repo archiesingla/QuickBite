@@ -5,6 +5,7 @@ import FoodDetailScreen from '../components/screens/FoodDetailScreen';
 import Payment from '../components/screens/Payment';
 import CardPayment from '../components/screens/CardPayment';
 import OrderConfirmation from '../components/screens/OrderConfirmation';
+import FeedbackScreen from '../components/screens/FeedbackScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -15,6 +16,7 @@ export default function HomeStack(){
       <Stack.Screen name="FoodDetailScreen" component={FoodDetailScreen} />
       <Stack.Screen name="Payment" component={Payment} />
       <Stack.Screen name="CardPayment" component={CardPayment} />
+      <Stack.Screen name="Feedback" component={FeedbackScreen} />
       <Stack.Screen name="OrderConfirmation" component={OrderConfirmation} />
     </Stack.Navigator>
   );
