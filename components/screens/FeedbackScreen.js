@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert, FlatList } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { FIRESTORE_DB } from "../../firebaseConfig"; // Ensure this is properly configured
+import { collection, addDoc } from "firebase/firestore";
+
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useOrderHistory } from "./OrderHistoryContext";
 
 const FeedbackScreen = ({ route }) => {
-  const {order} = route.params;
-  const {orders, addFeedbackToOrder} = useOrderHistory();
+  const { order } = route.params;  // Assuming order data is passed as route params
+  
+  const { orders, addFeedbackToOrder } = useOrderHistory();
   const [note, setNote] = useState("");
   const [imageUri, setImageUri] = useState(null);
-  const [feedbackList, setFeedbackList] = useState([]);
   const navigation = useNavigation();
 
- 
-
+  // Pick image from gallery
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -29,6 +30,7 @@ const FeedbackScreen = ({ route }) => {
     }
   };
 
+  // Capture image using camera
   const captureImage = async () => {
     let result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
@@ -41,17 +43,50 @@ const FeedbackScreen = ({ route }) => {
     }
   };
 
+  // Handle feedback submission
   const handleSubmitFeedback = async () => {
+    console.log("Feedback button clicked");
+
+    // Check if both note and image are empty
     if (!note && !imageUri) {
       Alert.alert("Please enter a note or upload an image");
       return;
     }
 
-    const newFeedback = { note, imageUri, date: new Date().toLocaleString() };
-    addFeedbackToOrder(order.date, newFeedback);
-    Alert.alert("Feedback Submitted!");
-    navigation.navigate("MainApp", { screen: "Order History" });
+    console.log("Feedback data:", { note, imageUri });
 
+    // Ensure order data is valid
+    if (!order || !order.userId || !order.id) {
+      Alert.alert("Order data is missing or incomplete.");
+      return;
+    }
+
+    const newFeedback = { note, imageUri, date: new Date().toLocaleString() };
+
+    try {
+      // Construct Firestore path dynamically
+      const feedbackRef = collection(
+        FIRESTORE_DB, 
+        "users", 
+        order.userId, 
+        "orders", 
+        order.id, 
+        "feedback"
+      );
+
+      console.log("Order object: ", order);
+      console.log("User ID: ", order.userId);
+      console.log("Order ID: ", order.id);
+
+      // Add feedback to Firestore
+      await addDoc(feedbackRef, newFeedback);
+      addFeedbackToOrder(order.id, newFeedback);  // Update local state with the new feedback
+      Alert.alert("Feedback Submitted!");
+      navigation.navigate("MainApp", { screen: "Order History" });
+    } catch (error) {
+      console.log("Error adding feedback", error);
+      Alert.alert("Error", "There was an issue submitting your feedback. Please try again.");
+    }
   };
 
   return (
@@ -85,7 +120,6 @@ const FeedbackScreen = ({ route }) => {
       <TouchableOpacity style={styles.submitButton} onPress={handleSubmitFeedback}>
         <Text style={styles.submitText}>Submit Feedback</Text>
       </TouchableOpacity>
-
     </View>
   );
 };
@@ -153,7 +187,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  
 });
 
 export default FeedbackScreen;

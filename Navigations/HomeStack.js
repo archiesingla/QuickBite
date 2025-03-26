@@ -16,7 +16,6 @@ export default function HomeStack(){
       <Stack.Screen name="FoodDetailScreen" component={FoodDetailScreen} />
       <Stack.Screen name="Payment" component={Payment} />
       <Stack.Screen name="CardPayment" component={CardPayment} />
-      <Stack.Screen name="Feedback" component={FeedbackScreen} />
       <Stack.Screen name="OrderConfirmation" component={OrderConfirmation} />
     </Stack.Navigator>
   );

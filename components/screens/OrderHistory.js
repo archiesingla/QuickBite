@@ -1,68 +1,64 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
-import { useOrderHistory } from './OrderHistoryContext'; // Import OrderHistoryContext
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
+import { useOrderHistory } from './OrderHistoryContext';
+import { getAuth } from 'firebase/auth';
 
-const OrderHistory = ({navigation}) => {
-  const { orders } = useOrderHistory(); // Access orders from OrderHistoryContext
-  const handleGiveFeedback = (order) => {
-    navigation.navigate('Feedback', { order });
-  };
+const OrderHistory = ({ navigation }) => {
+  const auth = getAuth();
+  const userId = auth.currentUser.uid;
+  console.log(userId);
+  const { orders } = useOrderHistory();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (orders.length > 0) {
+      setLoading(false);
+    }
+  }, [orders]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Order History</Text>
-      {orders.length === 0 ? (
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator} />
+      ) : orders.length === 0 ? (
         <Text style={styles.emptyMessage}>No orders yet!</Text>
       ) : (
-        orders.map((order, index) => {
-          // Only render the order if totalPrice is greater than 0
-          if (order.totalPrice <= 0) {
-            return null; // Skip rendering this order
-          }
+        orders.map((order, index) => (
+          <View key={order.id || index} style={styles.orderContainer}>
+            <Text style={styles.orderDate}>{order.date || 'No Date Available'}</Text>
+            <Text style={styles.orderTime}>Ordered at: {order.time || 'No Time Available'}</Text>
+            <Text style={styles.totalAmount}>Total: ${order.totalPrice?.toFixed(2)}</Text>
 
-          const orderItems = Array.isArray(order.items) ? order.items : [];
-
-          return (
-            <View key={index} style={styles.orderContainer}>
-              <Text style={styles.orderDate}>{order.date || 'No Date Available'}</Text>
-              <Text style={styles.orderTime}>Ordered at: {order.time || 'No Time Available'}</Text>
-              <Text style={styles.totalAmount}>Total: ${order.totalPrice.toFixed(2)}</Text>
-
-              <Text style={styles.orderItems}>Items:</Text>
-              {orderItems.length > 0 ? (
-                orderItems.map((item, idx) => (
-                  <View key={idx} style={styles.itemContainer}>
-                    <Text style={styles.foodName}>{item.name} x{item.quantity}</Text>
-                    {item.note && <Text style={styles.foodNote}>Note: {item.note}</Text>}
-                  </View>
-                ))
-              ) : (
-                <Text style={styles.foodNote}>No items</Text>
-              )}
-
-              <Text style={styles.orderStatus}>Status: {order.status || 'No Status Available'}</Text>
-
-              {/* Display feedback if available */}
-              {order.feedback && (
-                <View style={styles.feedbackContainer}>
-                  <Text style={styles.feedbackText}>Feedback: {order.feedback.note}</Text>
-                  {order.feedback.imageUri && (
-                    <Image source={{ uri: order.feedback.imageUri }} style={styles.feedbackImage} />
-                  )}
+            <Text style={styles.orderItems}>Items:</Text>
+            {Array.isArray(order.items) && order.items.length > 0 ? (
+              order.items.map((item, idx) => (
+                <View key={idx} style={styles.itemContainer}>
+                  <Text style={styles.foodName}>{item.name} x{item.quantity}</Text>
+                  {item.note && <Text style={styles.foodNote}>Note: {item.note}</Text>}
                 </View>
-              )}
+              ))
+            ) : (
+              <Text style={styles.foodNote}>No items</Text>
+            )}
 
-              {/* Show "Give Feedback" button only if feedback is not given */}
-              {!order.feedback && (
-                <TouchableOpacity
-                  style={styles.feedbackButton}
-                  onPress={() => handleGiveFeedback(order)}>
-                  <Text style={styles.feedbackButtonText}>Give Feedback</Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          );
-        })
+            <Text style={styles.orderStatus}>Status: {order.status || 'No Status Available'}</Text>
+
+            {/* Feedback Section */}
+            {order.feedback ? (
+              <View style={styles.feedbackContainer}>
+                <Text style={styles.feedbackText}>Feedback: {order.feedback.note}</Text>
+                {order.feedback.imageUri && (
+                  <Image source={{ uri: order.feedback.imageUri }} style={styles.feedbackImage} />
+                )}
+              </View>
+            ) : (
+              <TouchableOpacity style={styles.feedbackButton} onPress={() => navigation.navigate('Feedback', {  order: { ...order, userId: userId }, })}>
+                <Text style={styles.feedbackButtonText}>Give Feedback</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        ))
       )}
     </ScrollView>
   );
@@ -85,6 +81,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'gray',
     textAlign: 'center',
+  },
+  loadingIndicator: {
+    marginTop: 50,
   },
   orderContainer: {
     backgroundColor: 'white',

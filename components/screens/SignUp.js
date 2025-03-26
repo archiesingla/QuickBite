@@ -6,16 +6,18 @@ import {
   TouchableOpacity,
   Image,
   Alert,
-  StyleSheet
+  StyleSheet,
 } from "react-native";
-import { FIREBASE_AUTH } from "../../firebaseConfig";
-import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { FIREBASE_AUTH, FIRESTORE_DB } from "../../firebaseConfig";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 
 const SignUp = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const auth = FIREBASE_AUTH;
+  const db = FIRESTORE_DB;
 
   const handleSignUp = async () => {
     if (!email || !password || !confirmPassword) {
@@ -27,33 +29,29 @@ const SignUp = ({ navigation }) => {
       return;
     }
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Store user data in Firestore with UID as the document ID
+      await setDoc(doc(db, "users", user.uid), {
+        email: user.email,
+        uid: user.uid,
+      });
+
       Alert.alert("Success", "Account created successfully");
       navigation.navigate("Login");
     } catch (error) {
-        if (error.code === "auth/email-already-in-use") {
-            Alert.alert("Error", "Email already in use.");
-          }
-        else if (error.code === "auth/invalid-email") {
-            Alert.alert("Error", "Invalid Email !! Please use valid email.");
-          }
-        else{
-            Alert.alert("Sign-Up Failed", error.message);
-        }
-        setEmail('');
-        setPassword('');
-        setConfirmPassword('');
-    }
-  };
-
-  const handleGoogleSignUp = async () => {
-    try {
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-      Alert.alert("Success", "Signed up with Google");
-      navigation.navigate("Home");
-    } catch (error) {
-      Alert.alert("Google Sign-Up Failed", error.message);
+      console.log(error);
+      if (error.code === "auth/email-already-in-use") {
+        Alert.alert("Error", "Email already in use.");
+      } else if (error.code === "auth/invalid-email") {
+        Alert.alert("Error", "Invalid Email! Please use a valid email.");
+      } else {
+        Alert.alert("Sign-Up Failed", error.message);
+      }
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
     }
   };
 
@@ -129,14 +127,6 @@ const styles = StyleSheet.create({
   },
   signupButton: {
     backgroundColor: "#007bff",
-    width: "100%",
-    padding: 15,
-    borderRadius: 5,
-    alignItems: "center",
-    marginVertical: 10,
-  },
-  googleButton: {
-    backgroundColor: "#db4a39",
     width: "100%",
     padding: 15,
     borderRadius: 5,
