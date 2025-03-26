@@ -29,18 +29,33 @@ export const OrderHistoryProvider = ({ children }) => {
   // Fetch orders once the user is authenticated
   useEffect(() => {
     if (!userId) return; // Skip if user is not authenticated
-
+  
     const ordersRef = collection(db, "users", userId, "orders");
     const q = query(ordersRef);
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const fetchedOrders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      console.log('Fetched Orders:', fetchedOrders);
+  
+    const unsubscribe = onSnapshot(q, async (snapshot) => {
+      const fetchedOrders = await Promise.all(
+        snapshot.docs.map(async (orderDoc) => {
+          const orderData = { id: orderDoc.id, ...orderDoc.data() };
+  
+          // Fetch feedback subcollection
+          const feedbackRef = collection(db, "users", userId, "orders", orderDoc.id, "feedback");
+          const feedbackSnapshot = await onSnapshot(feedbackRef, (feedbackSnap) => {
+            const feedbacks = feedbackSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            orderData.feedback = feedbacks; // Store feedback as an array inside order
+          });
+  
+          return orderData;
+        })
+      );
+  
+      console.log("Fetched Orders with Feedback:", fetchedOrders);
       setOrders(fetchedOrders);
     });
-
+  
     return () => unsubscribe(); // Cleanup on unmount
   }, [userId]);
+  
 
   const addOrder = async (order) => {
     try {

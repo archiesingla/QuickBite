@@ -23,7 +23,8 @@ const CustomDrawerContent = (props) => {
     const fetchUserName = async () => {
       if (!userEmail) return;
       try {
-        const userDocRef = doc(FIRESTORE_DB, "users", userEmail);
+        const userId = auth.currentUser?.uid;
+        const userDocRef = doc(FIRESTORE_DB, "users", userId);
         const userDoc = await getDoc(userDocRef);
 
         if (userDoc.exists()) {

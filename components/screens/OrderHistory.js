@@ -44,18 +44,24 @@ const OrderHistory = ({ navigation }) => {
             <Text style={styles.orderStatus}>Status: {order.status || 'No Status Available'}</Text>
 
             {/* Feedback Section */}
-            {order.feedback ? (
+            {order.feedback && order.feedback.length > 0 ? (
               <View style={styles.feedbackContainer}>
-                <Text style={styles.feedbackText}>Feedback: {order.feedback.note}</Text>
-                {order.feedback.imageUri && (
-                  <Image source={{ uri: order.feedback.imageUri }} style={styles.feedbackImage} />
-                )}
+                {order.feedback.map((fb, idx) => (
+                  <View key={idx}>
+                    <Text style={styles.feedbackText}>Feedback: {fb.note}</Text>
+                    {fb.imageUri && <Image source={{ uri: fb.imageUri }} style={styles.feedbackImage} />}
+                  </View>
+                ))}
               </View>
             ) : (
-              <TouchableOpacity style={styles.feedbackButton} onPress={() => navigation.navigate('Feedback', { order: { ...order, userId } })}>
+              <TouchableOpacity
+                style={styles.feedbackButton}
+                onPress={() => navigation.navigate("Feedback", { order: { ...order, userId } })}
+              >
                 <Text style={styles.feedbackButtonText}>Give Feedback</Text>
               </TouchableOpacity>
             )}
+
           </View>
         ))
       )}
