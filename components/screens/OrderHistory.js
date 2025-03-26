@@ -5,8 +5,7 @@ import { getAuth } from 'firebase/auth';
 
 const OrderHistory = ({ navigation }) => {
   const auth = getAuth();
-  const userId = auth.currentUser.uid;
-  console.log(userId);
+  const userId = auth.currentUser?.uid;
   const { orders } = useOrderHistory();
   const [loading, setLoading] = useState(true);
 
@@ -53,7 +52,7 @@ const OrderHistory = ({ navigation }) => {
                 )}
               </View>
             ) : (
-              <TouchableOpacity style={styles.feedbackButton} onPress={() => navigation.navigate('Feedback', {  order: { ...order, userId: userId }, })}>
+              <TouchableOpacity style={styles.feedbackButton} onPress={() => navigation.navigate('Feedback', { order: { ...order, userId } })}>
                 <Text style={styles.feedbackButtonText}>Give Feedback</Text>
               </TouchableOpacity>
             )}
