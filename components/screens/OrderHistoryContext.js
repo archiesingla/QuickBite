@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { FIRESTORE_DB, FIREBASE_AUTH } from "../../firebaseConfig";
-import { collection, addDoc, updateDoc, doc, getDocs, getDoc } from "firebase/firestore";
+import { collection, addDoc, updateDoc, doc, getDoc, getDocs, onSnapshot } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 
 const OrderHistoryContext = createContext();
@@ -10,7 +10,9 @@ export const OrderHistoryProvider = ({ children }) => {
   const [orders, setOrders] = useState([]);
   const [userId, setUserId] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [adminEmail, setAdminEmail] = useState(null); // Store admin email separately
+  const [adminEmail, setAdminEmail] = useState(null); 
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+  const [feedbackData, setFeedbackData] = useState(null);
 
   const db = FIRESTORE_DB;
   const auth = FIREBASE_AUTH;
@@ -26,12 +28,12 @@ export const OrderHistoryProvider = ({ children }) => {
           const docSnap = await getDoc(adminRef);
           if (docSnap.exists()) {
             setIsAdmin(true);
-            setAdminEmail(user.email); // Store admin email, don't set userId
+            setAdminEmail(user.email); 
             console.log(`Admin access granted to: ${user.email}`);
           } else {
             setIsAdmin(false);
             setAdminEmail(null);
-            setUserId(user.uid); // Only set userId for regular users
+            setUserId(user.uid);
             console.log("User UID set:", user.uid);
           }
         } catch (error) {
@@ -50,51 +52,66 @@ export const OrderHistoryProvider = ({ children }) => {
 
   // Fetch orders based on admin or user status
   useEffect(() => {
-    const fetchOrders = async () => {
-      console.log('Fetching orders...');
+    if (!userId && !isAdmin) return;
 
-      if (isAdmin) {
-        console.log('Admin fetching all users’ orders...');
-        const usersRef = collection(db, "users");
-        const usersSnap = await getDocs(usersRef);
+    let unsubscribe;
 
-        const fetchedOrders = [];
-        for (const userDoc of usersSnap.docs) {
+    if (isAdmin) {
+      console.log("Admin fetching real-time orders...");
+      const usersRef = collection(db, "users");
+
+      unsubscribe = onSnapshot(usersRef, (usersSnap) => {
+        let allOrders = [];
+
+        usersSnap.forEach((userDoc) => {
           const userId = userDoc.id;
-          console.log(`Fetching orders for user ${userId}...`);
           const ordersRef = collection(db, "users", userId, "orders");
-          const ordersSnap = await getDocs(ordersRef);
 
-          ordersSnap.forEach((orderDoc) => {
-            fetchedOrders.push({ ...orderDoc.data(), id: orderDoc.id, userId });
+          onSnapshot(ordersRef, (ordersSnap) => {
+            const userOrders = ordersSnap.docs.map((orderDoc) => ({
+              ...orderDoc.data(),
+              id: orderDoc.id,
+              userId,
+            }));
+
+            const filteredOrders = userOrders.filter(order => order.total !== 0);
+            allOrders = [...allOrders, ...filteredOrders];
+
+            setOrders(allOrders); 
           });
-        }
+        });
+      });
+    } else {
+      console.log(`Fetching real-time orders for user: ${userId}`);
+      const ordersRef = collection(db, "users", userId, "orders");
 
-        console.log('All fetched orders:', fetchedOrders);
-        setOrders(fetchedOrders);
-      } else if (userId) {
-        console.log(`Fetching orders for user: ${userId}`);
-        const ordersRef = collection(db, "users", userId, "orders");
-        const ordersSnap = await getDocs(ordersRef);
-
+      unsubscribe = onSnapshot(ordersRef, (ordersSnap) => {
         const fetchedOrders = ordersSnap.docs.map((orderDoc) => ({
           id: orderDoc.id,
           ...orderDoc.data(),
         }));
 
-        console.log('User Orders:', fetchedOrders);
-        setOrders(fetchedOrders);
-      }
-    };
+        const filteredOrders = fetchedOrders.filter(order => order.total !== 0);
+        setOrders(filteredOrders);
+      });
+    }
 
-    fetchOrders().catch((error) => console.error('Error fetching orders:', error));
+    return () => unsubscribe && unsubscribe();
   }, [userId, isAdmin, db]);
 
   // Function to add a new order
   const addOrder = async (order) => {
     try {
       if (!userId) throw new Error("No authenticated user found.");
-      await addDoc(collection(db, "users", userId, "orders"), order);
+      const orderRef = await addDoc(collection(db, "users", userId, "orders"), order);
+
+      if (order.total !== 0) {
+        if (isAdmin) {
+          const orderWithId = { ...order, id: orderRef.id };
+          setOrders((prevOrders) => [...prevOrders, orderWithId]);
+        }
+      }
+
       console.log("✅ Order added to Firestore successfully!");
     } catch (error) {
       console.error("❌ Error adding order to Firestore:", error);
@@ -126,6 +143,10 @@ export const OrderHistoryProvider = ({ children }) => {
       if (!userId) throw new Error("No authenticated user found.");
       const feedbackRef = collection(db, "users", userId, "orders", orderId, "feedback");
       await addDoc(feedbackRef, feedbackData);
+      
+      setFeedbackSubmitted(true);
+      setFeedbackData(feedbackData); 
+
       console.log("✅ Feedback added to Firestore successfully!");
     } catch (error) {
       console.error("❌ Error adding feedback to Firestore:", error);
@@ -133,7 +154,7 @@ export const OrderHistoryProvider = ({ children }) => {
   };
 
   return (
-    <OrderHistoryContext.Provider value={{ orders, setOrders, addOrder, updateOrderStatus, addFeedbackToOrder }}>
+    <OrderHistoryContext.Provider value={{ orders, setOrders, addOrder, updateOrderStatus, addFeedbackToOrder, feedbackSubmitted, feedbackData }}>
       {children}
     </OrderHistoryContext.Provider>
   );

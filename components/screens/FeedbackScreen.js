@@ -1,17 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { FIRESTORE_DB } from "../../firebaseConfig"; // Ensure this is properly configured
-import { collection, addDoc } from "firebase/firestore";
-
-import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useOrderHistory } from "./OrderHistoryContext";
+import { Ionicons } from "@expo/vector-icons";
 
 const FeedbackScreen = ({ route }) => {
   const { order } = route.params;  // Assuming order data is passed as route params
+  const { addFeedbackToOrder } = useOrderHistory();
   
-  const { orders, addFeedbackToOrder } = useOrderHistory();
   const [note, setNote] = useState("");
   const [imageUri, setImageUri] = useState(null);
   const navigation = useNavigation();
@@ -47,7 +44,6 @@ const FeedbackScreen = ({ route }) => {
   const handleSubmitFeedback = async () => {
     console.log("Feedback button clicked");
 
-    // Check if both note and image are empty
     if (!note && !imageUri) {
       Alert.alert("Please enter a note or upload an image");
       return;
@@ -55,32 +51,15 @@ const FeedbackScreen = ({ route }) => {
 
     console.log("Feedback data:", { note, imageUri });
 
-    // Ensure order data is valid
     if (!order || !order.userId || !order.id) {
       Alert.alert("Order data is missing or incomplete.");
       return;
     }
 
-    const newFeedback = { note, imageUri, date: new Date().toLocaleString() };
+    const newFeedback = { note, imageUri, date: new Date().toLocaleString(), orderId: order.id };
 
     try {
-      // Construct Firestore path dynamically
-      const feedbackRef = collection(
-        FIRESTORE_DB, 
-        "users", 
-        order.userId, 
-        "orders", 
-        order.id, 
-        "feedback"
-      );
-
-      console.log("Order object: ", order);
-      console.log("User ID: ", order.userId);
-      console.log("Order ID: ", order.id);
-
-      // Add feedback to Firestore
-      await addDoc(feedbackRef, newFeedback);
-      addFeedbackToOrder(order.id, newFeedback);  // Update local state with the new feedback
+      await addFeedbackToOrder(order.id, newFeedback);
       Alert.alert("Feedback Submitted!");
       navigation.navigate("MainApp", { screen: "Order History" });
     } catch (error) {
@@ -101,10 +80,8 @@ const FeedbackScreen = ({ route }) => {
         onChangeText={setNote}
       />
 
-      {/* Image Preview */}
       {imageUri && <Image source={{ uri: imageUri }} style={styles.imagePreview} />}
 
-      {/* Image Picker Buttons */}
       <View style={styles.buttonRow}>
         <TouchableOpacity style={styles.button} onPress={pickImage}>
           <Ionicons name="image" size={24} color="white" />
@@ -116,7 +93,6 @@ const FeedbackScreen = ({ route }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Submit Button */}
       <TouchableOpacity style={styles.submitButton} onPress={handleSubmitFeedback}>
         <Text style={styles.submitText}>Submit Feedback</Text>
       </TouchableOpacity>

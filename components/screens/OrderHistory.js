@@ -6,7 +6,7 @@ import { getAuth } from 'firebase/auth';
 const OrderHistory = ({ navigation }) => {
   const auth = getAuth();
   const userId = auth.currentUser?.uid;
-  const { orders } = useOrderHistory();
+  const { orders, feedbackData } = useOrderHistory();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -14,6 +14,11 @@ const OrderHistory = ({ navigation }) => {
       setLoading(false);
     }
   }, [orders]);
+
+  // Check if feedback exists for an order
+  const hasFeedback = (orderId) => {
+    return feedbackData && feedbackData.orderId === orderId;
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -44,24 +49,23 @@ const OrderHistory = ({ navigation }) => {
             <Text style={styles.orderStatus}>Status: {order.status || 'No Status Available'}</Text>
 
             {/* Feedback Section */}
-            {order.feedback && order.feedback.length > 0 ? (
+            {hasFeedback(order.id) ? (
               <View style={styles.feedbackContainer}>
-                {order.feedback.map((fb, idx) => (
-                  <View key={idx}>
-                    <Text style={styles.feedbackText}>Feedback: {fb.note}</Text>
-                    {fb.imageUri && <Image source={{ uri: fb.imageUri }} style={styles.feedbackImage} />}
-                  </View>
-                ))}
+                <Text style={styles.feedbackText}>Your feedback:</Text>
+                <Text>{feedbackData?.note || "No note provided"}</Text>
+                {feedbackData?.imageUri && (
+                  <Image source={{ uri: feedbackData?.imageUri }} style={styles.feedbackImage} />
+                )}
               </View>
             ) : (
               <TouchableOpacity
                 style={styles.feedbackButton}
                 onPress={() => navigation.navigate("Feedback", { order: { ...order, userId } })}
+                disabled={hasFeedback(order.id)} // Disable the button if feedback is already given
               >
                 <Text style={styles.feedbackButtonText}>Give Feedback</Text>
               </TouchableOpacity>
             )}
-
           </View>
         ))
       )}
