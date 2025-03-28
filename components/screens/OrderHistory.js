@@ -17,7 +17,7 @@ const OrderHistory = ({ navigation }) => {
 
   // Check if feedback exists for an order
   const hasFeedback = (orderId) => {
-    return feedbackData && feedbackData.orderId === orderId;
+    return feedbackData[orderId]; // Check if feedback exists for the orderId
   };
 
   return (
@@ -52,9 +52,9 @@ const OrderHistory = ({ navigation }) => {
             {hasFeedback(order.id) ? (
               <View style={styles.feedbackContainer}>
                 <Text style={styles.feedbackText}>Your feedback:</Text>
-                <Text>{feedbackData?.note || "No note provided"}</Text>
-                {feedbackData?.imageUri && (
-                  <Image source={{ uri: feedbackData?.imageUri }} style={styles.feedbackImage} />
+                <Text>{feedbackData[order.id]?.note || "No note provided"}</Text>
+                {feedbackData[order.id]?.imageUri && (
+                  <Image source={{ uri: feedbackData[order.id]?.imageUri }} style={styles.feedbackImage} />
                 )}
               </View>
             ) : (
@@ -172,7 +172,8 @@ const styles = StyleSheet.create({
   feedbackImage: {
     width: 150,
     height: 150,
-    borderRadius: 10,
+    marginTop: 10,
+    borderRadius: 5,
   },
 });
 

@@ -12,7 +12,7 @@ export const OrderHistoryProvider = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminEmail, setAdminEmail] = useState(null); 
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
-  const [feedbackData, setFeedbackData] = useState(null);
+  const [feedbackData, setFeedbackData] = useState({}); // store feedback by orderId
 
   const db = FIRESTORE_DB;
   const auth = FIREBASE_AUTH;
@@ -99,6 +99,31 @@ export const OrderHistoryProvider = ({ children }) => {
     return () => unsubscribe && unsubscribe();
   }, [userId, isAdmin, db]);
 
+  // Fetch feedback for orders in real-time
+  useEffect(() => {
+    if (userId) {
+      const unsubscribeFeedback = onSnapshot(collection(db, "users", userId, "orders"), (orderSnapshot) => {
+        orderSnapshot.forEach((orderDoc) => {
+          const orderId = orderDoc.id;
+          const feedbackRef = collection(db, "users", userId, "orders", orderId, "feedback");
+
+          // Fetch feedback data for each order
+          onSnapshot(feedbackRef, (feedbackSnapshot) => {
+            const feedbackData = feedbackSnapshot.docs.map(doc => doc.data());
+            if (feedbackData.length > 0) {
+              setFeedbackData((prevData) => ({
+                ...prevData,
+                [orderId]: feedbackData[0], // Store feedback by orderId
+              }));
+            }
+          });
+        });
+      });
+
+      return () => unsubscribeFeedback();
+    }
+  }, [userId, db]);
+
   // Function to add a new order
   const addOrder = async (order) => {
     try {
@@ -145,7 +170,10 @@ export const OrderHistoryProvider = ({ children }) => {
       await addDoc(feedbackRef, feedbackData);
       
       setFeedbackSubmitted(true);
-      setFeedbackData(feedbackData); 
+      setFeedbackData((prevData) => ({
+        ...prevData,
+        [orderId]: feedbackData, // Add feedback to the order in context
+      }));
 
       console.log("✅ Feedback added to Firestore successfully!");
     } catch (error) {
