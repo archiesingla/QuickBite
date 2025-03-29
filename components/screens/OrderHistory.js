@@ -52,7 +52,7 @@ const OrderHistory = ({ navigation }) => {
             {hasFeedback(order.id) ? (
               <View style={styles.feedbackContainer}>
                 <Text style={styles.feedbackText}>Your feedback:</Text>
-                <Text>{feedbackData[order.id]?.note || "No note provided"}</Text>
+                <Text>{feedbackData[order.id]?.note || ""}</Text>
                 {feedbackData[order.id]?.imageUri && (
                   <Image source={{ uri: feedbackData[order.id]?.imageUri }} style={styles.feedbackImage} />
                 )}

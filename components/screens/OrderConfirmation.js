@@ -45,7 +45,7 @@ const OrderConfirmation = ({ navigation }) => {
 
   useEffect(() => {
     // Redirect to Home after 2 seconds if order is cancelled by user or admin
-    if (orderStatus === "Cancelled by User" || orderStatus === "Accepted") {
+    if (orderStatus === "Cancelled by User" || orderStatus === "Accepted" || orderStatus === "Cancelled by Rudy’s") {
       const redirectTimer = setTimeout(() => {
         navigation.navigate("Home");
       }, 2000); // 2 seconds delay for cancelled by user
@@ -73,7 +73,7 @@ const OrderConfirmation = ({ navigation }) => {
       </View>
 
       {isCancelled ? (
-        <Text style={styles.message}>Order Cancelled Successfully!</Text> // Updated message for user cancellation
+        <Text style={styles.message}>Order Cancelled Successfully!</Text>
       ) : isLoading ? (
         <Text style={styles.message}>Waiting for cafe's response...</Text>
       ) : (

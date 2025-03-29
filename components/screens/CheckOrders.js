@@ -1,35 +1,52 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { useOrderHistory } from './OrderHistoryContext';
 import { FIRESTORE_DB } from '../../firebaseConfig';
-import { getDoc, doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc, onSnapshot } from 'firebase/firestore';
 
 const CheckOrders = () => {
   const { orders, setOrders } = useOrderHistory();
   const db = FIRESTORE_DB;
-  console.log("from admins page");
-  console.log(orders);
+
+  useEffect(() => {
+    // Set up a listener for real-time updates of orders collection
+    const unsubscribe = onSnapshot(
+      // Make sure you're pointing to the correct Firestore path
+      // Update this path to reflect the actual Firestore structure
+      doc(db, 'users', 'userId', 'orders', 'orderId'),
+      (docSnap) => {
+        if (docSnap.exists()) {
+          const orderData = docSnap.data();
+          // Check if the order has been updated and update local state
+          setOrders((prevOrders) =>
+            prevOrders.map((order) =>
+              order.id === orderData.id ? { ...order, status: orderData.status } : order
+            )
+          );
+        }
+      },
+      (error) => {
+        console.error("Error getting real-time updates:", error);
+      }
+    );
+
+    // Clean up the listener when the component is unmounted
+    return () => unsubscribe();
+  }, [db, setOrders]);
 
   const updateOrderStatus = async (orderId, status, userId) => {
     try {
-      console.log(`Updating Order ID: ${orderId}, Status: ${status}`);
-
       const orderRef = doc(db, `users/${userId}/orders/${orderId}`);
-      const docSnap = await getDoc(orderRef);
 
-      if (!docSnap.exists()) {
-        console.error("Order document not found!");
-        return;
-      }
+      // Update the order status in Firestore
+      await updateDoc(orderRef, { status });
 
-      await updateDoc(orderRef, { status: status === "Cancelled" ? "Cancelled by Rudy’s" : status });
-
+      // Optionally, update the local state immediately to reflect the change
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
-          order.id === orderId ? { ...order, status: status } : order
+          order.id === orderId ? { ...order, status } : order
         )
       );
-
       console.log(`Order status updated successfully: ${status}`);
     } catch (error) {
       console.error("Error updating order status:", error);
@@ -37,13 +54,13 @@ const CheckOrders = () => {
   };
 
   const renderOrderItem = ({ item }) => {
-    if (item.totalPrice === 0|| item.totalPrice === undefined) return null;
-  
-    // Check if items exist and are an array before calling map
+    if (item.totalPrice === 0 || item.totalPrice === undefined) return null;
+
     if (!Array.isArray(item.items)) {
       console.error(`Invalid items for order ID: ${item.id}`);
       return null;
     }
+
     return (
       <View style={styles.orderItem}>
         <Text style={styles.orderText}>Date: {item.date}</Text>
@@ -52,7 +69,7 @@ const CheckOrders = () => {
         <Text style={styles.orderText}>Items:</Text>
 
         {item.items.map((foodItem, idx) => (
-          <View key={idx} style={styles.foodItemContainer}>
+          <View key={`${item.id}-${idx}`} style={styles.foodItemContainer}>
             <Text style={styles.foodItemText}>{foodItem.name} x{foodItem.quantity}</Text>
             {foodItem.note && <Text style={styles.foodNote}>Note: {foodItem.note}</Text>}
           </View>
@@ -68,7 +85,7 @@ const CheckOrders = () => {
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, styles.cancelButton]}
-              onPress={() => updateOrderStatus(item.id, "Cancelled", item.userId)}
+              onPress={() => updateOrderStatus(item.id, "Cancelled by Rudy’s", item.userId)}
             >
               <Text style={styles.buttonText}>Cancel</Text>
             </TouchableOpacity>
@@ -86,7 +103,11 @@ const CheckOrders = () => {
       {orders.length === 0 ? (
         <Text style={styles.noOrders}>No orders yet</Text>
       ) : (
-        <FlatList data={orders} keyExtractor={(item) => item.id} renderItem={renderOrderItem} />
+        <FlatList
+          data={orders}
+          keyExtractor={(item, index) => item.id ? item.id.toString() : `key-${index}`}
+          renderItem={renderOrderItem}
+        />
       )}
     </View>
   );

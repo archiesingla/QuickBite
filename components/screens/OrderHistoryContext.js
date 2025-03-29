@@ -10,25 +10,26 @@ export const OrderHistoryProvider = ({ children }) => {
   const [orders, setOrders] = useState([]);
   const [userId, setUserId] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [adminEmail, setAdminEmail] = useState(null); 
+  const [adminEmail, setAdminEmail] = useState(null);
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
-  const [feedbackData, setFeedbackData] = useState({}); // store feedback by orderId
+  const [feedbackData, setFeedbackData] = useState({});
+  const [unsubscribeOrders, setUnsubscribeOrders] = useState([]);
 
   const db = FIRESTORE_DB;
   const auth = FIREBASE_AUTH;
 
-  // Listen for changes in authentication state
+  // Listen for authentication state changes
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
+      cleanupListeners();
       if (user) {
         console.log('User authenticated:', user.email);
         const adminRef = doc(db, "admins", user.email);
-
         try {
           const docSnap = await getDoc(adminRef);
           if (docSnap.exists()) {
             setIsAdmin(true);
-            setAdminEmail(user.email); 
+            setAdminEmail(user.email);
             console.log(`Admin access granted to: ${user.email}`);
           } else {
             setIsAdmin(false);
@@ -48,81 +49,105 @@ export const OrderHistoryProvider = ({ children }) => {
     });
 
     return () => unsubscribeAuth();
-  }, [auth, db]);
+  }, []);
+
+  // Cleanup Firestore listeners on logout
+  const cleanupListeners = () => {
+    console.log("Unsubscribing from Firestore listeners...");
+    unsubscribeOrders.forEach((unsubscribe) => unsubscribe());
+    setUnsubscribeOrders([]);
+  };
 
   // Fetch orders based on admin or user status
   useEffect(() => {
     if (!userId && !isAdmin) return;
 
-    let unsubscribe;
+    cleanupListeners(); // Ensure old listeners are removed before adding new ones
+    let unsubscribers = [];
 
     if (isAdmin) {
       console.log("Admin fetching real-time orders...");
       const usersRef = collection(db, "users");
 
-      unsubscribe = onSnapshot(usersRef, (usersSnap) => {
+      const adminUnsub = onSnapshot(usersRef, (usersSnap) => {
         let allOrders = [];
 
         usersSnap.forEach((userDoc) => {
           const userId = userDoc.id;
           const ordersRef = collection(db, "users", userId, "orders");
 
-          onSnapshot(ordersRef, (ordersSnap) => {
+          const userUnsub = onSnapshot(ordersRef, (ordersSnap) => {
             const userOrders = ordersSnap.docs.map((orderDoc) => ({
               ...orderDoc.data(),
               id: orderDoc.id,
               userId,
             }));
 
-            const filteredOrders = userOrders.filter(order => order.total !== 0);
-            allOrders = [...allOrders, ...filteredOrders];
+            allOrders = [...allOrders, ...userOrders];
+            const uniqueOrders = Array.from(new Map(allOrders.map(order => [order.id, order])).values());
 
-            setOrders(allOrders); 
+            setOrders(uniqueOrders);
           });
+
+          unsubscribers.push(userUnsub);
         });
       });
-    } else {
+
+      unsubscribers.push(adminUnsub);
+    } else if (userId) {
       console.log(`Fetching real-time orders for user: ${userId}`);
       const ordersRef = collection(db, "users", userId, "orders");
 
-      unsubscribe = onSnapshot(ordersRef, (ordersSnap) => {
+      const userOrdersUnsub = onSnapshot(ordersRef, (ordersSnap) => {
         const fetchedOrders = ordersSnap.docs.map((orderDoc) => ({
           id: orderDoc.id,
           ...orderDoc.data(),
         }));
 
-        const filteredOrders = fetchedOrders.filter(order => order.total !== 0);
-        setOrders(filteredOrders);
-      });
-    }
-
-    return () => unsubscribe && unsubscribe();
-  }, [userId, isAdmin, db]);
-
-  // Fetch feedback for orders in real-time
-  useEffect(() => {
-    if (userId) {
-      const unsubscribeFeedback = onSnapshot(collection(db, "users", userId, "orders"), (orderSnapshot) => {
-        orderSnapshot.forEach((orderDoc) => {
-          const orderId = orderDoc.id;
-          const feedbackRef = collection(db, "users", userId, "orders", orderId, "feedback");
-
-          // Fetch feedback data for each order
-          onSnapshot(feedbackRef, (feedbackSnapshot) => {
-            const feedbackData = feedbackSnapshot.docs.map(doc => doc.data());
-            if (feedbackData.length > 0) {
-              setFeedbackData((prevData) => ({
-                ...prevData,
-                [orderId]: feedbackData[0], // Store feedback by orderId
-              }));
-            }
-          });
+        setOrders((prevOrders) => {
+          const uniqueOrders = Array.from(new Map(fetchedOrders.map(order => [order.id, order])).values());
+          return uniqueOrders;
         });
       });
 
-      return () => unsubscribeFeedback();
+      unsubscribers.push(userOrdersUnsub);
     }
-  }, [userId, db]);
+
+    setUnsubscribeOrders(unsubscribers);
+
+    return cleanupListeners;
+  }, [userId, isAdmin]);
+
+  // Fetch feedback for orders in real-time
+  useEffect(() => {
+    if (!userId) return;
+    const feedbackUnsubscribers = [];
+    const ordersRef = collection(db, "users", userId, "orders");
+
+    const orderUnsub = onSnapshot(ordersRef, (orderSnapshot) => {
+      orderSnapshot.forEach((orderDoc) => {
+        const orderId = orderDoc.id;
+        const feedbackRef = collection(db, "users", userId, "orders", orderId, "feedback");
+
+        const feedbackUnsub = onSnapshot(feedbackRef, (feedbackSnapshot) => {
+          const feedbackData = feedbackSnapshot.docs.map(doc => doc.data());
+          if (feedbackData.length > 0) {
+            setFeedbackData((prevData) => ({
+              ...prevData,
+              [orderId]: feedbackData[0],
+            }));
+          }
+        });
+
+        feedbackUnsubscribers.push(feedbackUnsub);
+      });
+    });
+
+    feedbackUnsubscribers.push(orderUnsub);
+    setUnsubscribeOrders(prev => [...prev, ...feedbackUnsubscribers]);
+
+    return cleanupListeners;
+  }, [userId]);
 
   // Function to add a new order
   const addOrder = async (order) => {
@@ -131,10 +156,11 @@ export const OrderHistoryProvider = ({ children }) => {
       const orderRef = await addDoc(collection(db, "users", userId, "orders"), order);
 
       if (order.total !== 0) {
-        if (isAdmin) {
-          const orderWithId = { ...order, id: orderRef.id };
-          setOrders((prevOrders) => [...prevOrders, orderWithId]);
-        }
+        setOrders((prevOrders) => {
+          const newOrder = { ...order, id: orderRef.id };
+          const uniqueOrders = Array.from(new Map([...prevOrders, newOrder].map(o => [o.id, o])).values());
+          return uniqueOrders;
+        });
       }
 
       console.log("✅ Order added to Firestore successfully!");
@@ -150,11 +176,12 @@ export const OrderHistoryProvider = ({ children }) => {
       const orderRef = doc(db, "users", userId, "orders", orderId);
       await updateDoc(orderRef, { status: newStatus });
 
-      setOrders((prevOrders) =>
-        prevOrders.map((order) =>
+      setOrders((prevOrders) => {
+        const updatedOrders = prevOrders.map(order => 
           order.id === orderId ? { ...order, status: newStatus } : order
-        )
-      );
+        );
+        return Array.from(new Map(updatedOrders.map(order => [order.id, order])).values());
+      });
 
       console.log("✅ Order status updated in Firestore and locally!");
     } catch (error) {
@@ -168,11 +195,11 @@ export const OrderHistoryProvider = ({ children }) => {
       if (!userId) throw new Error("No authenticated user found.");
       const feedbackRef = collection(db, "users", userId, "orders", orderId, "feedback");
       await addDoc(feedbackRef, feedbackData);
-      
+
       setFeedbackSubmitted(true);
       setFeedbackData((prevData) => ({
         ...prevData,
-        [orderId]: feedbackData, // Add feedback to the order in context
+        [orderId]: feedbackData,
       }));
 
       console.log("✅ Feedback added to Firestore successfully!");
