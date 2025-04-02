@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, Alert } from "react-native";
-import styles from "../styles/styles";  // Import styles
-import { FIRESTORE_DB } from '../../firebaseConfig'; // Import Firebase config
-import { collection, query, where, getDocs } from "firebase/firestore"; // Firestore functions
-import * as Location from 'expo-location';  // Import expo-location
+import styles from "../styles/styles";
+import { FIRESTORE_DB } from '../../firebaseConfig';
+import { collection, query, where, getDocs } from "firebase/firestore";
+import * as Location from 'expo-location';
 
 const OFFICE_LOCATION = {
-  latitude: 44.656787,  // Latitude of 6967 Bayers Road, Halifax
-  longitude: -63.6241815, // Longitude of 6967 Bayers Road, Halifax
-  radius: 0.3,  // Allowed radius in km (100 meters)
+  latitude: 44.656787,
+  longitude: -63.6241815,
+  radius: 0.3,
 };
 
 const SigninEmployees = ({ navigation }) => {
@@ -33,25 +33,36 @@ const SigninEmployees = ({ navigation }) => {
         Alert.alert("Permission Denied", "Enable location access in settings.");
         return null;
       }
-
-      const location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
-      return {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      };
+  
+      return new Promise(async (resolve, reject) => {
+        try {
+          const subscription = await Location.watchPositionAsync(
+            { accuracy: Location.Accuracy.High, timeInterval: 1000, distanceInterval: 1 },
+            (location) => {
+              subscription.remove(); // Now it will work because subscription is defined
+              resolve({
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+              });
+            }
+          );
+        } catch (error) {
+          reject(error);
+        }
+      });
     } catch (error) {
       console.error("Error fetching location:", error);
-      Alert.alert("Location Error", "Could not fetch your location.");
+      Alert.alert("Location Error", "Could not fetch your location. Try again.");
       return null;
     }
   };
-
+  
   // Function to check if user is at the correct location
   const isWithinOfficeRadius = (currentLocation) => {
     if (!currentLocation) return false;
 
     const toRadians = (deg) => (deg * Math.PI) / 180;
-    const earthRadiusKm = 6371; // Earth's radius in km
+    const earthRadiusKm = 6371;
 
     const dLat = toRadians(currentLocation.latitude - OFFICE_LOCATION.latitude);
     const dLon = toRadians(currentLocation.longitude - OFFICE_LOCATION.longitude);

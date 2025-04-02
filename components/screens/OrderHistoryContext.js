@@ -18,7 +18,6 @@ export const OrderHistoryProvider = ({ children }) => {
   const db = FIRESTORE_DB;
   const auth = FIREBASE_AUTH;
 
-  // Listen for authentication state changes
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
       cleanupListeners();
@@ -51,18 +50,16 @@ export const OrderHistoryProvider = ({ children }) => {
     return () => unsubscribeAuth();
   }, []);
 
-  // Cleanup Firestore listeners on logout
   const cleanupListeners = () => {
     console.log("Unsubscribing from Firestore listeners...");
     unsubscribeOrders.forEach((unsubscribe) => unsubscribe());
     setUnsubscribeOrders([]);
   };
 
-  // Fetch orders based on admin or user status
   useEffect(() => {
     if (!userId && !isAdmin) return;
 
-    cleanupListeners(); // Ensure old listeners are removed before adding new ones
+    cleanupListeners();
     let unsubscribers = [];
 
     if (isAdmin) {
@@ -118,7 +115,6 @@ export const OrderHistoryProvider = ({ children }) => {
     return cleanupListeners;
   }, [userId, isAdmin]);
 
-  // Fetch feedback for orders in real-time
   useEffect(() => {
     if (!userId) return;
     const feedbackUnsubscribers = [];
@@ -149,7 +145,6 @@ export const OrderHistoryProvider = ({ children }) => {
     return cleanupListeners;
   }, [userId]);
 
-  // Function to add a new order
   const addOrder = async (order) => {
     try {
       if (!userId) throw new Error("No authenticated user found.");
@@ -163,9 +158,9 @@ export const OrderHistoryProvider = ({ children }) => {
         });
       }
 
-      console.log("✅ Order added to Firestore successfully!");
+      console.log("Order added to Firestore successfully!");
     } catch (error) {
-      console.error("❌ Error adding order to Firestore:", error);
+      console.error("Error adding order to Firestore:", error);
     }
   };
 
@@ -183,9 +178,9 @@ export const OrderHistoryProvider = ({ children }) => {
         return Array.from(new Map(updatedOrders.map(order => [order.id, order])).values());
       });
 
-      console.log("✅ Order status updated in Firestore and locally!");
+      console.log("Order status updated in Firestore and locally!");
     } catch (error) {
-      console.error("❌ Error updating order status in Firestore:", error);
+      console.error("Error updating order status in Firestore:", error);
     }
   };
 
@@ -202,9 +197,9 @@ export const OrderHistoryProvider = ({ children }) => {
         [orderId]: feedbackData,
       }));
 
-      console.log("✅ Feedback added to Firestore successfully!");
+      console.log("Feedback added to Firestore successfully!");
     } catch (error) {
-      console.error("❌ Error adding feedback to Firestore:", error);
+      console.error("Error adding feedback to Firestore:", error);
     }
   };
 

@@ -11,9 +11,10 @@ const ContactUs = () => {
   useEffect(() => {
     const fetchContactInfo = async () => {
       try {
+        //integrating API to fetch the details from the cafe's page/ 
         const response = await fetch('https://www.rudyscatering.ca/contact/api/ui-extensions/');
         const text = await response.text();
-
+        //contact information is under the script part so fetching that and then search the data
         const jsonLdMatches = text.match(/<script type="application\/ld\+json">(.*?)<\/script>/gs);
 
         if (!jsonLdMatches) {
@@ -119,7 +120,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   linkText: {
-    color: '#FF5733', // Bright color for links
+    color: '#FF5733',
     fontWeight: 'bold',
   },
   errorText: {

@@ -27,7 +27,6 @@ const Login = ({ navigation }) => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      //console.log("Logged in UID:", user.uid);
 
       const adminDocRef = doc(db, "admins", email);
       const adminDoc = await getDoc(adminDocRef);

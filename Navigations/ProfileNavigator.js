@@ -12,7 +12,6 @@ import { useNavigation } from '@react-navigation/native';
 // Create Drawer Navigator
 const Drawer = createDrawerNavigator();
 
-// Custom Drawer Content to show user details
 const CustomDrawerContent = (props) => {
   const [userName, setUserName] = useState('');
   const [loading, setLoading] = useState(true);
@@ -28,8 +27,6 @@ const CustomDrawerContent = (props) => {
         const userDoc = await getDoc(userDocRef);
 
         if (userDoc.exists()) {
-          setUserName(userDoc.data().name);
-        } else {
           setUserName(userEmail.split('@')[0]);
         }
       } catch (error) {
@@ -72,14 +69,14 @@ const CustomDrawerContent = (props) => {
   );
 };
 
-// SignOutScreen Component
+//Signout
 const SignOutScreen = () => {
   const navigation = useNavigation();
 
   const handleSignOut = async () => {
     try {
       await FIREBASE_AUTH.signOut();
-      navigation.replace('Login'); // Redirect to login screen after signing out
+      navigation.replace('Login');
     } catch (error) {
       console.error("Error during sign-out:", error);
     }

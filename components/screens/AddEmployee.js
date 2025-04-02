@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, Alert, StyleSheet, Image } from 'react-native';
-import { FIRESTORE_DB } from '../../firebaseConfig'; // Ensure this import is correct
-import { collection, addDoc, query, where, getDocs } from 'firebase/firestore'; // Import necessary Firebase Firestore methods
+import { FIRESTORE_DB } from '../../firebaseConfig'; 
+import { collection, addDoc, query, where, getDocs } from 'firebase/firestore'; 
 
 const AddEmployee = ({navigation}) => {
   const [employeeName, setEmployeeName] = useState('');
   const [passcode, setPasscode] = useState('');
 
-  // Function to check if passcode already exists
+  // Passcode should be unique for all employees
   const checkPasscodeExists = async (passcode) => {
     const q = query(
       collection(FIRESTORE_DB, 'employees'),
@@ -15,12 +15,11 @@ const AddEmployee = ({navigation}) => {
     );
 
     const querySnapshot = await getDocs(q);
-    return !querySnapshot.empty;  // If snapshot is empty, passcode is unique
+    return !querySnapshot.empty; 
   };
 
-  // Function to create a new employee
+  // Creating a new employee
   const createEmployee = async () => {
-    // Ensure passcode is 4 digits
     if (passcode.length !== 4) {
       Alert.alert("Error", "Passcode must be 4 digits.");
       return;

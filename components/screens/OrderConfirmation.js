@@ -16,15 +16,15 @@ const OrderConfirmation = ({ navigation }) => {
       time: new Date().toLocaleTimeString(),
       status: "Placed",
     };
-
-    addOrder(orderDetails); // Add order to history
-    clearCart(); // Clear the cart
+     // Add order to history
+    addOrder(orderDetails);
+    clearCart(); 
 
     Alert.alert("Order Placed", "Your order has been successfully placed.", [
       {
         text: "OK",
         onPress: () => {
-          navigation.navigate("Home"); // Navigate to home after placing the order
+          navigation.navigate("Home");
         },
       },
     ]);

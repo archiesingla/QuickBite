@@ -53,7 +53,7 @@ const Home = ({ navigation }) => {
   const handleCategoryClick = (categoryIndex) => {
     scrollViewRef.current.scrollTo({ x: 0, y: categoryIndex * 200, animated: true });
   };
-
+  //making the view to scroll horizontal as well
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -69,7 +69,6 @@ const Home = ({ navigation }) => {
             <Text style={styles.searchButtonText}>🔍</Text>
           </TouchableOpacity>
         </View>
-
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}

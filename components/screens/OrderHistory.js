@@ -17,7 +17,7 @@ const OrderHistory = ({ navigation }) => {
 
   // Check if feedback exists for an order
   const hasFeedback = (orderId) => {
-    return feedbackData[orderId]; // Check if feedback exists for the orderId
+    return feedbackData[orderId]; 
   };
 
   return (

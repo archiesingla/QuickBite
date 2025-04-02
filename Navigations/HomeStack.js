@@ -5,7 +5,6 @@ import FoodDetailScreen from '../components/screens/FoodDetailScreen';
 import Payment from '../components/screens/Payment';
 import CardPayment from '../components/screens/CardPayment';
 import OrderConfirmation from '../components/screens/OrderConfirmation';
-import FeedbackScreen from '../components/screens/FeedbackScreen';
 
 const Stack = createNativeStackNavigator();
 

@@ -6,7 +6,7 @@ import { useOrderHistory } from "./OrderHistoryContext";
 import { Ionicons } from "@expo/vector-icons";
 
 const FeedbackScreen = ({ route }) => {
-  const { order } = route.params;  // Assuming order data is passed as route params
+  const { order } = route.params; 
   const { addFeedbackToOrder } = useOrderHistory();
   
   const [note, setNote] = useState("");

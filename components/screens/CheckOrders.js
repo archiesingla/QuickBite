@@ -9,15 +9,11 @@ const CheckOrders = () => {
   const db = FIRESTORE_DB;
 
   useEffect(() => {
-    // Set up a listener for real-time updates of orders collection
     const unsubscribe = onSnapshot(
-      // Make sure you're pointing to the correct Firestore path
-      // Update this path to reflect the actual Firestore structure
       doc(db, 'users', 'userId', 'orders', 'orderId'),
       (docSnap) => {
         if (docSnap.exists()) {
           const orderData = docSnap.data();
-          // Check if the order has been updated and update local state
           setOrders((prevOrders) =>
             prevOrders.map((order) =>
               order.id === orderData.id ? { ...order, status: orderData.status } : order
@@ -29,8 +25,6 @@ const CheckOrders = () => {
         console.error("Error getting real-time updates:", error);
       }
     );
-
-    // Clean up the listener when the component is unmounted
     return () => unsubscribe();
   }, [db, setOrders]);
 
@@ -38,10 +32,8 @@ const CheckOrders = () => {
     try {
       const orderRef = doc(db, `users/${userId}/orders/${orderId}`);
 
-      // Update the order status in Firestore
       await updateDoc(orderRef, { status });
 
-      // Optionally, update the local state immediately to reflect the change
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
           order.id === orderId ? { ...order, status } : order

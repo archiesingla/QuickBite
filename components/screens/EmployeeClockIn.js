@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from "../styles/EmployeeClockIn";
 
 const EmployeeClockIn = ({ route, navigation }) => {
-  const { employeeName } = route.params || {};  // Get employee name passed from SigninEmployees
+  const { employeeName } = route.params || {}; 
 
   const [clockedIn, setClockedIn] = useState(false);
   const [startTime, setStartTime] = useState(null);
@@ -13,7 +13,6 @@ const EmployeeClockIn = ({ route, navigation }) => {
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
   const [currentDate, setCurrentDate] = useState(new Date().toDateString());
 
-  // Update current time every second
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date().toLocaleTimeString());
@@ -71,7 +70,8 @@ const EmployeeClockIn = ({ route, navigation }) => {
     if (!startTime) return;
 
     const now = new Date();
-    const diff = (now - startTime) / 3600000; // Calculate hours worked
+    //calculating the hours worked
+    const diff = (now - startTime) / 3600000; 
     setEndTime(now);
     setHoursWorked(diff.toFixed(2));
     setClockedIn(false);
@@ -85,7 +85,7 @@ const EmployeeClockIn = ({ route, navigation }) => {
     }
   };
 
-  // Reset clock state
+  // Resetting the clock state
   const resetClock = () => {
     setClockedIn(false);
     setStartTime(null);
@@ -104,7 +104,7 @@ const EmployeeClockIn = ({ route, navigation }) => {
         <Text style={styles.buttonText}>{clockedIn ? "Clock Out" : "Clock In"}</Text>
       </TouchableOpacity>
 
-      {/* Always show the table if the user has clocked in at least once */}
+      {/* Making sure thar the table is visible if the user has clocked in at least once */}
       {startTime && (
         <View style={styles.tableContainer}>
           <View style={styles.tableRow}>
@@ -120,7 +120,6 @@ const EmployeeClockIn = ({ route, navigation }) => {
         </View>
       )}
 
-      {/* Navigate back to Employee's Home Page */}
       <TouchableOpacity onPress={() => navigation.navigate("SigninEmployees")}>
         <Text style={styles.optionText}>Back to Employee's Home Page</Text>
       </TouchableOpacity>
