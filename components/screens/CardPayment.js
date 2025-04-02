@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     flex: 1, 
     padding: 20, 
     justifyContent: 'center', 
-    backgroundColor: '#F8F8F8' 
+    backgroundColor: 'white' 
   },
   logoContainer: {
     alignItems: 'center',
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     textAlign: 'center' 
   },
   input: { 
-    backgroundColor: '#FFF',
+    backgroundColor: '#F8F8F8',
      padding: 15, 
      borderRadius: 8, 
      marginBottom: 10 

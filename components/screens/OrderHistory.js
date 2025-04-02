@@ -7,7 +7,7 @@ const OrderHistory = ({ navigation }) => {
   const auth = getAuth();
   const userId = auth.currentUser?.uid;
   const { orders, feedbackData } = useOrderHistory();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (orders.length > 0) {
@@ -22,7 +22,6 @@ const OrderHistory = ({ navigation }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Order History</Text>
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator} />
       ) : orders.length === 0 ? (

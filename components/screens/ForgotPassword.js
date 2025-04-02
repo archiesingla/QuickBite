@@ -8,8 +8,9 @@ import {
   Alert,
 } from "react-native";
 import styles from "../styles/styles";
-import { FIREBASE_AUTH } from "../../firebaseConfig";
+import { FIREBASE_AUTH, FIRESTORE_DB } from "../../firebaseConfig";
 import { sendPasswordResetEmail, fetchSignInMethodsForEmail } from "firebase/auth";
+import { collection, addDoc, query, where, getDocs } from 'firebase/firestore'; 
 
 // Checking the format of email using regex
 const validateEmail = (email) => {
@@ -33,22 +34,18 @@ const ForgotPassword = ({ navigation }) => {
     }
 
     try {
-      // Check if email exists in Firebase
-      const methods = await fetchSignInMethodsForEmail(FIREBASE_AUTH, username);
-      // If not registered
-      if (methods.length === 0) {  
+      // Query Firestore for the user
+      const usersRef = collection(FIRESTORE_DB, "users");
+      const q = query(usersRef, where("email", "==", username));
+      const querySnapshot = await getDocs(q);
+  
+      if (querySnapshot.empty) {
         Alert.alert(
           "No Account Found",
-          "You don't have an account with us. Please create one.",
+          "No account is associated with this email. Please sign up.",
           [
-            {
-              text: "Sign Up",
-              onPress: () => navigation.navigate("SignUp"),
-            },
-            {
-              text: "Cancel",
-              onPress: () => {},
-            },
+            { text: "Sign Up", onPress: () => navigation.navigate("SignUp") },
+            { text: "Cancel", style: "cancel" },
           ]
         );
         return;

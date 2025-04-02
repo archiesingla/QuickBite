@@ -1,10 +1,10 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 
 const AdminHome = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Admin Home</Text>
+      <Image source={require("../images/logo.jpeg")} style={styles.logo} />
 
       {/* Admin-specific options */}
       <TouchableOpacity
@@ -29,25 +29,23 @@ const styles = StyleSheet.create({
       justifyContent: "center",
       alignItems: "center",
       padding: 20,
-      backgroundColor: "#f4f4f4", // Light background color
+      backgroundColor: "white",
     },
-    title: {
-      fontSize: 24,
-      fontWeight: "bold",
-      marginBottom: 30,
-      color: "#333", // Dark text color for contrast
+    logo: {
+      width: 250,
+      height: 200,
     },
     button: {
       width: "80%",
       padding: 15,
-      marginVertical: 10,
-      backgroundColor: "#007BFF", // Blue background for buttons
+      marginVertical: 20,
+      backgroundColor: "#007BFF", 
       borderRadius: 8,
       justifyContent: "center",
       alignItems: "center",
     },
     buttonText: {
-      color: "#fff", // White text color
+      color: "#fff", 
       fontSize: 18,
       fontWeight: "bold",
     },

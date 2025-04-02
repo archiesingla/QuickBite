@@ -91,7 +91,6 @@ const CheckOrders = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Orders</Text>
       {orders.length === 0 ? (
         <Text style={styles.noOrders}>No orders yet</Text>
       ) : (
@@ -106,9 +105,16 @@ const CheckOrders = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 25, backgroundColor: '#F8F8F8' },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
-  noOrders: { fontSize: 18, color: '#555', textAlign: 'center' },
+  container: { 
+    flex: 1, 
+    padding: 25, 
+    backgroundColor: '#F8F8F8' 
+  },
+  noOrders: { 
+    fontSize: 18, 
+    color: '#555', 
+    textAlign: 'center' 
+  },
   orderItem: {
     backgroundColor: 'white',
     padding: 15,
@@ -117,19 +123,57 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 5,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { 
+      width: 0, 
+      height: 2 
+    },
     elevation: 3,
   },
-  orderText: { fontSize: 16, color: '#333' },
-  foodItemContainer: { marginTop: 5 },
-  foodItemText: { fontSize: 14, color: '#555' },
-  foodNote: { fontSize: 12, color: '#777', fontStyle: 'italic', marginLeft: 10 },
-  buttonContainer: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 },
-  button: { padding: 10, borderRadius: 5, width: '48%', alignItems: 'center' },
-  acceptButton: { backgroundColor: 'green' },
-  cancelButton: { backgroundColor: 'red' },
-  buttonText: { color: 'white', fontSize: 16, fontWeight: 'bold' },
-  orderStatus: { marginTop: 10, fontSize: 16, fontWeight: 'bold', color: 'blue' },
+  orderText: { 
+    fontSize: 16, 
+    color: '#333' 
+  },
+  foodItemContainer: { 
+    marginTop: 5 
+  },
+  foodItemText: { 
+    fontSize: 14, 
+    color: '#555' 
+  },
+  foodNote: { 
+    fontSize: 12, 
+    color: '#777', 
+    fontStyle: 'italic', 
+    marginLeft: 10 
+  },
+  buttonContainer: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    marginTop: 10 
+  },
+  button: { 
+    padding: 10, 
+    borderRadius: 5, 
+    width: '48%', 
+    alignItems: 'center' 
+  },
+  acceptButton: { 
+    backgroundColor: 'green' 
+  },
+  cancelButton: { 
+    backgroundColor: 'red' 
+  },
+  buttonText: { 
+    color: 'white', 
+    fontSize: 16, 
+    fontWeight: 'bold' 
+  },
+  orderStatus: { 
+    marginTop: 10, 
+    fontSize: 16, 
+    fontWeight: 'bold', 
+    color: 'blue' 
+  },
 });
 
 export default CheckOrders;
