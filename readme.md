@@ -21,7 +21,7 @@ Rudy's Catering is a mobile application built with React Native using Expo. The 
 ## Setup & Installation
 ### 1. Clone the repository:
 ```sh
-  git clone <repository-url>
+  git clone https://git.cs.dal.ca/courses/2025-winter/csci-4176_5708/project-milestone-3/archie.git
   cd <project-directory>
 ```
 ### 2. Install dependencies:
