@@ -140,7 +140,7 @@ const enhancedStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#f4f4f9',
+    backgroundColor: 'white',
   },
   employeeButton: {
     backgroundColor: '#3498db',

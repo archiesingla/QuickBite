@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert, SafeAreaView } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
 import { useOrderHistory } from "./OrderHistoryContext";
@@ -69,7 +69,7 @@ const FeedbackScreen = ({ route }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Submit Feedback</Text>
 
       <TextInput
@@ -96,14 +96,14 @@ const FeedbackScreen = ({ route }) => {
       <TouchableOpacity style={styles.submitButton} onPress={handleSubmitFeedback}>
         <Text style={styles.submitText}>Submit Feedback</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 40,
     backgroundColor: "#F8F8F8",
     alignItems: "center",
   },

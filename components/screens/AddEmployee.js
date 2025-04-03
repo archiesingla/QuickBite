@@ -83,10 +83,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: 'white',
   },
   logo: {
-    width: 150,
+    width: 170,
     height: 150,
     marginBottom: 20,
   },
