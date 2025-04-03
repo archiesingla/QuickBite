@@ -39,7 +39,6 @@ const AddEmployee = ({navigation}) => {
         passcode: passcode,
       });
 
-      console.log("Employee created with ID:", docRef.id);
       Alert.alert("Success", "Employee created successfully!");
       setEmployeeName('');
       setPasscode('');

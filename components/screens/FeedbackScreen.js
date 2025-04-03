@@ -42,15 +42,11 @@ const FeedbackScreen = ({ route }) => {
 
   // Handle feedback submission
   const handleSubmitFeedback = async () => {
-    console.log("Feedback button clicked");
 
     if (!note && !imageUri) {
       Alert.alert("Please enter a note or upload an image");
       return;
     }
-
-    console.log("Feedback data:", { note, imageUri });
-
     if (!order || !order.userId || !order.id) {
       Alert.alert("Order data is missing or incomplete.");
       return;
@@ -63,7 +59,6 @@ const FeedbackScreen = ({ route }) => {
       Alert.alert("Feedback Submitted!");
       navigation.navigate("MainApp", { screen: "Order History" });
     } catch (error) {
-      console.log("Error adding feedback", error);
       Alert.alert("Error", "There was an issue submitting your feedback. Please try again.");
     }
   };

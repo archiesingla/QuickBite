@@ -2,31 +2,15 @@ import React, { useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { useOrderHistory } from './OrderHistoryContext';
 import { FIRESTORE_DB } from '../../firebaseConfig';
-import { doc, updateDoc, onSnapshot } from 'firebase/firestore';
+import { doc, updateDoc, getDocs, collection } from 'firebase/firestore';
 
 const CheckOrders = () => {
-  const { orders, setOrders } = useOrderHistory();
+  const { orders, setOrders, fetchOrders } = useOrderHistory();
   const db = FIRESTORE_DB;
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      doc(db, 'users', 'userId', 'orders', 'orderId'),
-      (docSnap) => {
-        if (docSnap.exists()) {
-          const orderData = docSnap.data();
-          setOrders((prevOrders) =>
-            prevOrders.map((order) =>
-              order.id === orderData.id ? { ...order, status: orderData.status } : order
-            )
-          );
-        }
-      },
-      (error) => {
-        console.error("Error getting real-time updates:", error);
-      }
-    );
-    return () => unsubscribe();
-  }, [db, setOrders]);
+    fetchOrders();
+  }, []);
 
   const updateOrderStatus = async (orderId, status, userId) => {
     try {
@@ -40,6 +24,8 @@ const CheckOrders = () => {
         )
       );
       console.log(`Order status updated successfully: ${status}`);
+
+      fetchOrders();
     } catch (error) {
       console.error("Error updating order status:", error);
     }
