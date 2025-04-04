@@ -45,10 +45,9 @@ Rudy's Catering is a mobile application built with React Native using Expo. The 
    npx expo start
    ```
 ## Admin's Access
-The admin access is restricted and fixed:
+The admin access is restricted and fixed as only the cafe owner has access to this admin account. There is no functionality to create new admin accounts through the app.
 - **Email**: admin@gmail.com
 - **Password**: adminpassword
- Only the cafe owner has access to this admin account. There is no functionality to create new admin accounts through the app.
 
 ## Emulator Setup (Optional)
 For testing the location-based features (like employees clockin), set your emulator's location to:
